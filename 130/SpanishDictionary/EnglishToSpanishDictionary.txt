@@ -1,0 +1,28 @@
+I		yo
+study		estudiar
+computer	el ordenador
+science		la ciencia
+at		en
+a		to
+university	la universidad
+house 		la casa
+queen  		la reina
+girl 		la chica
+rooster		El gallo
+mother	la madre
+father	el padre
+boy 	el chico
+dog		el perro
+cat 	el Gato 
+eat	 	comer
+drink 	tomar, beber
+horse el caballo
+bird el pajaro
+boat el bargo
+bread el pan
+rich rico, rica
+poor pobre
+weather el tiempo
+quiet  callado
+dizzy mareado
+hope la esperanza
