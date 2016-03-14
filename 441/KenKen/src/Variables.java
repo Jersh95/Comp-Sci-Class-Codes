@@ -32,6 +32,7 @@ public class Variables {
         domain = new ArrayList<Integer>();
         for(int i = 1; i <= size; i++){
             domain.add(i);
+            //System.out.println("Domain Index: " + i);
         }
     }
 

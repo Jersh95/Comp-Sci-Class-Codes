@@ -123,7 +123,6 @@ public class KenKenWindow extends JFrame{
         display = new KenKenDisplay(puzzle);
         this.add(display);
         repaint();
-
     }
 
     /**

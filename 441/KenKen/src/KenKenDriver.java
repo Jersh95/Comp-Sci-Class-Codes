@@ -2,7 +2,7 @@
  * Created by Josh Jacobsen on 3/2/2016.
  * Program Purpose:
  *  This program will take in a user chosen file representing a KenKen puzzle and solve it through node and arc consistency while displaying it with GUI
- *  
+ *
  */
 public class KenKenDriver {
     /**

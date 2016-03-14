@@ -85,6 +85,13 @@ public class KenKenPuzzle {
             if(list.get(i).getArithSym().equals("=")){
                 list.get(i).getPoints().get(0).setAssignment(list.get(i).getArithSol());
                 list.get(i).getPoints().get(0).setAssigned(true);
+
+                //this will loop through the domain and remove everything except what it is assigned to
+                for(int j = 1; j <= getNumRows(); j++) {
+                    if(j != list.get(i).getPoints().get(0).getAssignment()) {
+                        list.get(i).getPoints().get(0).domain.remove(j);
+                    }
+                }
             }
         }
     }
