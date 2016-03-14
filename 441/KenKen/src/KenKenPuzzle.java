@@ -14,10 +14,13 @@ public class KenKenPuzzle {
     File file;
     private int[][] groupIndex;
 
+    /**
+     * This is a simple constructor for the puzzle, it will read in the file and create the puzzle
+     * @param file
+     */
     public KenKenPuzzle(File file){
         createPuzzle(file);
         this.file = file;
-
     }
 
     /**
@@ -33,7 +36,8 @@ public class KenKenPuzzle {
             this.groupIndex = new int[getNumRows()][getNumRows()];
 
             int constrCount = 0;
-            //This will read in the variables
+
+            //This will read in the variables adding them to a Variables ArrayList for each Constraint
             while (scanner.hasNext()) {
                 int sol = 0;
                 String sym = "";
@@ -59,10 +63,6 @@ public class KenKenPuzzle {
                 sym = Character.toString(temp.charAt(temp.length() - 1));
                 sol = Integer.parseInt(temp.substring(2, temp.length() - 1));
 
-                if(sym.equals("=")){
-                    varList.get(varList.size()-1).setAssignment(sol);
-                    varList.get(varList.size()-1).setAssigned(true);
-                }
                 //Add each constraint to the ArrayList
                 Constraints constraint = new Constraints(varList, sol, sym);
                 this.constraintList.add(constraint);
@@ -76,39 +76,88 @@ public class KenKenPuzzle {
         }
     }
 
+    /**
+     * This will perform the node consistency for the puzzle
+     * @param list - the list containing the constraints
+     */
+    public void nodeConsistency(ArrayList<Constraints> list){
+        for(int i = 0; i < list.size(); i ++){
+            if(list.get(i).getArithSym().equals("=")){
+                list.get(i).getPoints().get(0).setAssignment(list.get(i).getArithSol());
+                list.get(i).getPoints().get(0).setAssigned(true);
+            }
+        }
+    }
+
+    /**
+     * This will perform the arc consistency for the puzzle
+     * @param list - the list containing the constraints
+     */
+    public void arcConsistency(ArrayList<Constraints> list){
+
+    }
+
+    /**
+     * getter for grid size
+     * @return - the size
+     */
     public int getNumRows() {
         return numRows;
     }
 
+    /**
+     * setter for grid size
+     * @param numRows - the size
+     */
     public void setNumRows(int numRows) {
         this.numRows = numRows;
     }
 
+    /**
+     * getter for variable list
+     * @return - the list
+     */
     public ArrayList<Variables> getVarList() {
         return varList;
     }
 
+    /**
+     * setter for variable list
+     * @param varList - the list
+     */
     public void setVarList(ArrayList<Variables> varList) {
         this.varList = varList;
     }
 
+    /**
+     * getter for group index
+     * @return - the group index
+     */
     public int[][] getGroupIndex() {
         return groupIndex;
     }
 
-    public int getGoupIndexValue(int row, int col){return groupIndex[row][col];}
-
+    /**
+     * setter for group index
+     * @param groupIndex - group index
+     */
     public void setGroupIndex(int[][] groupIndex) {
         this.groupIndex = groupIndex;
     }
 
+    /**
+     * getter for constraint list
+     * @return - the list
+     */
     public ArrayList<Constraints> getConstraintList() {
         return constraintList;
     }
 
+    /**
+     * setter for constraint list
+     * @param constraintList - the list
+     */
     public void setConstraintList(ArrayList<Constraints> constraintList) {
         this.constraintList = constraintList;
     }
-
-
 }

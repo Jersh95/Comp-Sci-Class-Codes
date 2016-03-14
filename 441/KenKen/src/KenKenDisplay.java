@@ -3,6 +3,8 @@ import java.awt.*;
 
 /**
  * Created by Josh Jacobsen on 3/2/2016.
+ * Program Purpose:
+ *  This program will take in a user chosen file representing a KenKen puzzle and solve it through node and arc consistency while displaying it with GUI
  */
 public class KenKenDisplay extends JPanel {
     private KenKenPuzzle puzzle;
@@ -17,14 +19,23 @@ public class KenKenDisplay extends JPanel {
 
     Font bigFont = new Font("Arial",1,40);
     Font smallFont = new Font("Arial",1,20);
+
+    /**
+     * This is the constructor for the Display that assigns the puzzle to the puzzle passed inside the parameter
+     * @param p - the puzzle
+     */
     public KenKenDisplay(KenKenPuzzle p) {
         this.puzzle = p;
     }
 
-
-
+    /**
+     * This method will create the display the the user will see inside the window
+     * @param g - graphics component
+     */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+        //This will draw the black background representing the borders
         g.setColor(Color.black);
         g.fillRect(start_X, start_Y, (cellSize+divWid)*puzzle.getNumRows()+divWid, (cellSize+divWid)*puzzle.getNumRows()+divWid);
 
@@ -32,11 +43,13 @@ public class KenKenDisplay extends JPanel {
             for(int row = 0; row < puzzle.getNumRows(); row ++){
                 for(int col = 0; col < puzzle.getNumRows(); col++){
 
+                    //This will draw the grid
                     g.setColor(Color.lightGray);
                     g.fillRect(start_X+divWid+(cellSize+divWid)*col, start_Y+divWid + (cellSize+divWid)*row, cellSize ,cellSize);
 
+                    //code for the constraint grouping goes here
 
-
+                    //This will detect and display the assignment in the lower right of each box
                     g.setColor(Color.RED);
                     g.setFont(bigFont);
                     for(int c = 0; c < puzzle.getConstraintList().size(); c++){
@@ -50,6 +63,7 @@ public class KenKenDisplay extends JPanel {
                         }
                     }
 
+                    //This will detect and display the constraint solution and symbol in the top left of the first box in the constraint list
                     g.setColor(Color.BLUE);
                     g.setFont(smallFont);
                     for(int i = 0; i < puzzle.getConstraintList().size(); i++){
