@@ -61,11 +61,13 @@ public class KenKenPuzzle {
 
                 if(sym.equals("=")){
                     varList.get(varList.size()-1).setAssignment(sol);
+                    varList.get(varList.size()-1).setAssigned(true);
                 }
                 //Add each constraint to the ArrayList
                 Constraints constraint = new Constraints(varList, sol, sym);
                 this.constraintList.add(constraint);
                 constrCount++;
+                System.out.println("Sym: " + constraintList.get(constraintList.size()-1).getArithSol() + constraintList.get(constraintList.size()-1).getArithSym());
                 //System.out.println(varList.get(1).);
             }
 
@@ -93,6 +95,8 @@ public class KenKenPuzzle {
     public int[][] getGroupIndex() {
         return groupIndex;
     }
+
+    public int getGoupIndexValue(int row, int col){return groupIndex[row][col];}
 
     public void setGroupIndex(int[][] groupIndex) {
         this.groupIndex = groupIndex;

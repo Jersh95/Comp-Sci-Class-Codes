@@ -45,6 +45,10 @@ public class Variables {
         return assignment;
     }
 
+    public int getAssignment(int row, int col) {
+        return assignment;
+    }
+
     public void setAssignment(int assignment) {
         this.assignment = assignment;
     }
@@ -52,4 +56,6 @@ public class Variables {
     public void setAssigned(boolean assigned) {
         isAssigned = assigned;
     }
+
+
 }
