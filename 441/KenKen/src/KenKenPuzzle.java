@@ -5,6 +5,8 @@ import java.util.Scanner;
 
 /**
  * Created by Josh Jacobsen on 3/2/2016.
+ * Program Purpose:
+ *  This program will take in a user chosen file representing a KenKen puzzle and solve it through node and arc consistency while displaying it with GUI
  */
 public class KenKenPuzzle {
     private String[][] puzzle;
@@ -13,6 +15,7 @@ public class KenKenPuzzle {
     private ArrayList<Variables> varList;
     File file;
     private int[][] groupIndex;
+    private ArrayList<Integer> queue = new ArrayList<Integer>();
 
     /**
      * This is a simple constructor for the puzzle, it will read in the file and create the puzzle
@@ -100,8 +103,31 @@ public class KenKenPuzzle {
      * This will perform the arc consistency for the puzzle
      * @param list - the list containing the constraints
      */
-    public void arcConsistency(ArrayList<Constraints> list){
+    public boolean arcConsistency(ArrayList<Constraints> list){
+        while(queue.size()>0){
+            for(int i = 0; i < ; i++){
+                for(int j = 0; j < ; j++){
+                    if(revise(list, list.get(i).getPoints().get(i),list.get(i).getPoints().get(j)) == true){
+                        if(list.get(i).getPoints().get(j).domain.size() == 0){
+                            return false;
+                        }
+                        //for each Xk in Xi
+                        //queue.add(Xk, Xi)
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
+    public boolean revise(ArrayList<Constraints> list, Variables var1, Variables var2){
+        boolean revised = false;
+        //for each x in d
+            //if no value y in Dj allows (x,y) to satisfy the constraint between Xi and Xj then
+                //delete x from Di
+                //revised = true;
+
+        return revised;
     }
 
     /**
