@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * Created by Josh Jacobsen on 3/2/2016.
@@ -26,6 +28,23 @@ public class KenKenDisplay extends JPanel {
      */
     public KenKenDisplay(KenKenPuzzle p) {
         this.puzzle = p;
+        this.addMouseListener(new MouseAdapter(){
+            public void mouseClicked(MouseEvent me)
+            {
+                processClick(me);
+            }
+        });
+    }
+
+    /**
+     * This will call the generateMove() method to display the next step of arc consistency
+     * @param me - user clicking
+     */
+    public void processClick(MouseEvent me)
+    {
+        //System.out.println("\t" + selectedRow + "\t" + selectedCol);
+        puzzle.generateMove();
+        repaint();
     }
 
     /**

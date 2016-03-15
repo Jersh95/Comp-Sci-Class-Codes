@@ -80,6 +80,14 @@ public class KenKenPuzzle {
     }
 
     /**
+     * This will generate the next arc constency step once the user clicks the screen
+     */
+    public void generateMove()
+    {
+
+    }
+
+    /**
      * This will perform the node consistency for the puzzle
      * @param list - the list containing the constraints
      */
