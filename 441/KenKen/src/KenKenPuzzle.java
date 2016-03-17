@@ -12,8 +12,8 @@ public class KenKenPuzzle {
     private String[][] puzzle;
     private int numRows;
     private ArrayList<Constraints> constraintList = new ArrayList<Constraints>();
-    private ArrayList<Variables> varList;
-    File file;
+    private Variable[][] variablesTotal;
+
     private int[][] groupIndex;
     private ArrayList<Integer> queue = new ArrayList<Integer>();
 
@@ -23,7 +23,6 @@ public class KenKenPuzzle {
      */
     public KenKenPuzzle(File file){
         createPuzzle(file);
-        this.file = file;
     }
 
     /**
@@ -37,7 +36,13 @@ public class KenKenPuzzle {
             setNumRows(Integer.parseInt(scanner.nextLine()));
             this.puzzle = new String[getNumRows()][getNumRows()];
             this.groupIndex = new int[getNumRows()][getNumRows()];
-
+            variablesTotal = new Variable[getNumRows()][getNumRows()];
+            for(int row = 0; row < getNumRows(); row++){
+                for(int col = 0; col < getNumRows(); col++){
+                    variablesTotal[row][col] = new Variable(row, col, numRows);
+                    variablesTotal[row][col].initDomain(numRows);
+                }
+            }
             int constrCount = 0;
 
             //This will read in the variables adding them to a Variables ArrayList for each Constraint
@@ -45,15 +50,14 @@ public class KenKenPuzzle {
                 int sol = 0;
                 String sym = "";
                 String temp = "";
-                varList = new ArrayList<Variables>();
+                ArrayList<Variable> varList = new ArrayList<Variable>();
                 while (scanner.hasNextInt()) {
                     int row = scanner.nextInt();
                     System.out.println("Row: " + row);
                     int col = scanner.nextInt();
                     System.out.println("Col: " + col);
-                    Variables variables = new Variables(row, col, getNumRows());
-                    varList.add(variables);
-                    varList.get(varList.size()-1).setAssigned(true);
+                    Variable variable = variablesTotal[row][col];
+                    varList.add(variable);
 
                     groupIndex[row][col] = constrCount;
                     System.out.println("COUNT: " + constrCount);
@@ -111,6 +115,7 @@ public class KenKenPuzzle {
      * This will perform the arc consistency for the puzzle
      * @param list - the list containing the constraints
      */
+    /*
     public boolean arcConsistency(ArrayList<Constraints> list){
         while(queue.size()>0){
             for(int i = 0; i < ; i++){
@@ -127,8 +132,28 @@ public class KenKenPuzzle {
         }
         return true;
     }
+    */
+    public void formInequality(){
+        for(int row = 0; row < numRows; row++){
+            for(int var = 0; var < numRows; var++){
+                for(int col = 0; col < numRows; col++){
+                    if(var != col) {
+                        Variable var1 = variablesTotal[var][col];
+                        Variable var2 = variablesTotal[row][col];
+                        ArrayList<Variable> conVars = new ArrayList<Variable>();
+                        conVars.add(var1);
+                        conVars.add(var2);
+                        Constraints constr = new Constraints(conVars, 0, "!=");
+                        constraintList.add(constr);
+                    }
+                }
+            }
+        }
+    }
 
-    public boolean revise(ArrayList<Constraints> list, Variables var1, Variables var2){
+
+
+    public boolean revise(ArrayList<Constraints> list, Variable var1, Variable var2){
         boolean revised = false;
         //for each x in d
             //if no value y in Dj allows (x,y) to satisfy the constraint between Xi and Xj then
@@ -137,6 +162,29 @@ public class KenKenPuzzle {
 
         return revised;
     }
+
+    public boolean reviseAddition(Constraints c1){
+        Variable var1 = c1.getVariable(0);
+        Variable var2 = c1.getVariable(1);
+        boolean revised = false;
+        for(int i = 0; i < var1.domain.size(); i++){
+            int neededValue = c1.getArithSol()-var1.domain.get(i);
+            if(!var2.domainContains(neededValue)){
+                var1.domain.remove(i);
+                revised = true;
+            }
+        }
+        for(int i = 0; i < var2.domain.size(); i++){
+            int neededValue = c1.getArithSol()-var2.domain.get(i);
+            if(!var1.domainContains(neededValue)){
+                var2.domain.remove(i);
+                revised = true;
+            }
+        }
+
+        return revised;
+    }
+
 
     /**
      * getter for grid size
@@ -152,22 +200,6 @@ public class KenKenPuzzle {
      */
     public void setNumRows(int numRows) {
         this.numRows = numRows;
-    }
-
-    /**
-     * getter for variable list
-     * @return - the list
-     */
-    public ArrayList<Variables> getVarList() {
-        return varList;
-    }
-
-    /**
-     * setter for variable list
-     * @param varList - the list
-     */
-    public void setVarList(ArrayList<Variables> varList) {
-        this.varList = varList;
     }
 
     /**

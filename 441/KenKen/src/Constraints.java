@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Constraints {
     private int arithSol;
     private String arithSym;
-    private ArrayList<Variables> variables = new ArrayList<Variables>();
+    private ArrayList<Variable> variables = new ArrayList<Variable>();
 
     /**
      * This is the constructor for the Constraints
@@ -16,7 +16,7 @@ public class Constraints {
      * @param arithSol - the solution the Constraints must equate to
      * @param arithSym - the arithmetic symbol that the Constraints must use to equate to the Sol
      */
-    public Constraints(ArrayList<Variables> variabels, int arithSol, String arithSym) {
+    public Constraints(ArrayList<Variable> variabels, int arithSol, String arithSym) {
         this.variables = variabels;
         this.arithSym = arithSym;
         this.arithSol = arithSol;
@@ -42,7 +42,11 @@ public class Constraints {
      * getter for the Variable ArrayList
      * @return - the ArrayList
      */
-    public ArrayList<Variables> getPoints() {
+    public ArrayList<Variable> getPoints() {
         return variables;
+    }
+
+    public Variable getVariable(int index){
+        return variables.get(index);
     }
 }

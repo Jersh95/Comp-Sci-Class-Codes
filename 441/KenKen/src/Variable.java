@@ -5,7 +5,7 @@ import java.util.ArrayList;
  * Program Purpose:
  *  This program will take in a user chosen file representing a KenKen puzzle and solve it through node and arc consistency while displaying it with GUI
  */
-public class Variables {
+public class Variable {
     boolean isAssigned;
     int assignment;
     int row;
@@ -18,10 +18,29 @@ public class Variables {
      * @param col - the col
      * @param size - the size of the grid
      */
-    public Variables(int row, int col, int size) {
+    public Variable(int row, int col, int size) {
         this.row = row;
         this.col = col;
         initDomain(size);
+    }
+
+    public String toString(){
+        String info = row+ "," +  col + "   (";
+        for(int i = 0; i < domain.size(); i++){
+            info += domain.get(i) + ",";
+        }
+        info = info.substring(0,info.length()-1) + ")";
+
+        return info;
+    }
+
+    public boolean domainContains(int neededValue){
+        for(int i = 0; i < domain.size(); i++){
+            if(domain.get(i) == neededValue){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
