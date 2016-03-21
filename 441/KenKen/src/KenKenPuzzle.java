@@ -111,28 +111,8 @@ public class KenKenPuzzle {
         }
     }
 
-    /**
-     * This will perform the arc consistency for the puzzle
-     * @param list - the list containing the constraints
-     */
-    /*
-    public boolean arcConsistency(ArrayList<Constraints> list){
-        while(queue.size()>0){
-            for(int i = 0; i < ; i++){
-                for(int j = 0; j < ; j++){
-                    if(revise(list, list.get(i).getPoints().get(i),list.get(i).getPoints().get(j)) == true){
-                        if(list.get(i).getPoints().get(j).domain.size() == 0){
-                            return false;
-                        }
-                        //for each Xk in Xi
-                        //queue.add(Xk, Xi)
-                    }
-                }
-            }
-        }
-        return true;
-    }
-    */
+
+
     public void formInequality(){
         for(int row = 0; row < numRows; row++){
             for(int var = 0; var < numRows; var++){
@@ -152,17 +132,75 @@ public class KenKenPuzzle {
     }
 
 
+    /**
+     * This will perform the arc consistency for the puzzle
+     * @param list - the list containing the constraints
+     */
+    public boolean arcConsistency(ArrayList<Constraints> list){
+        ArrayList<Constraints> queue = new ArrayList();
+        boolean revised = false;
+        String constrType = "";
+        for(int i = 0; i < list.size(); i++){
+            queue.add(list.get(i));
+        }
+        while (queue.size()>0){
+            revise()
+        }
+
+
+
+
+        while(queue.size()>0){
+            for(int i = 0; i < ; i++){
+                for(int j = 0; j < ; j++){
+                    if(revise(list, list.get(i).getPoints().get(i),list.get(i).getPoints().get(j)) == true){
+                        if(list.get(i).getPoints().get(j).domain.size() == 0){
+                            return false;
+                        }
+                        //for each Xk in Xi
+                        //queue.add(Xk, Xi)
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
 
     public boolean revise(ArrayList<Constraints> list, Variable var1, Variable var2){
         boolean revised = false;
-        //for each x in d
-            //if no value y in Dj allows (x,y) to satisfy the constraint between Xi and Xj then
-                //delete x from Di
-                //revised = true;
 
+        //this will get the last item on the list and then delete it
+        while(queue.size()>0){
+            list.get(list.size()-1);
+
+            switch (list.get(list.size()-1).getArithSym()){
+                case "+": reviseAddition(list.get(list.size()-1));
+                    revised = true;
+                    break;
+                case "-": reviseSubtraction(list.get(list.size()-1));
+                    revised = true;
+                    break;
+                case "*": reviseMultiplication(list.get(list.size()-1));
+                    revised = true;
+                    break;
+                case "/": reviseDivision(list.get(list.size()-1));
+                    revised = true;
+                    break;
+                case "!=": reviseInequality(list.get(list.size()-1));
+                    revised = true;
+                    break;
+            }
+            list.remove(list.size()-1);
+        }
         return revised;
     }
 
+    /**
+     * Revises the addition constraints
+     * @param c1 - the Constraint
+     * @return - true if it was revised
+     */
     public boolean reviseAddition(Constraints c1){
         Variable var1 = c1.getVariable(0);
         Variable var2 = c1.getVariable(1);
@@ -181,10 +219,67 @@ public class KenKenPuzzle {
                 revised = true;
             }
         }
+        return revised;
+    }
+
+    /**
+     * Revises the multiplication constraints
+     * @param c1 - the Constraint
+     * @return - true if it was revised
+     */
+    public boolean reviseMultiplication(Constraints c1){
+        Variable var1 = c1.getVariable(0);
+        Variable var2 = c1.getVariable(1);
+        boolean revised = false;
+        for(int i = 0; i < var1.domain.size(); i++){
+            int neededValue = c1.getArithSol()/var1.domain.get(i);
+            if(!var2.domainContains(neededValue)){
+                var1.domain.remove(i);
+                revised = true;
+            }
+        }
+        for(int i = 0; i < var2.domain.size(); i++){
+            int neededValue = c1.getArithSol()/var2.domain.get(i);
+            if(!var1.domainContains(neededValue)){
+                var2.domain.remove(i);
+                revised = true;
+            }
+        }
+        return revised;
+    }
+
+    /**
+     * Revises the subtraction constraints
+     * @param c1 - the Constraint
+     * @return - true if it was revised
+     */
+    public boolean reviseSubtraction(Constraints c1){
+        boolean revised = false;
 
         return revised;
     }
 
+    /**
+     * Revises the division constraints
+     * @param c1 - the Constraint
+     * @return - true if it was revised
+     */
+    public boolean reviseDivision(Constraints c1){
+        boolean revised = false;
+
+        return revised;
+    }
+
+    /**
+     * Revises the inequality constraints
+     * @param c1 - the Constraint
+     * @return - true if it was revised
+     */
+    public boolean reviseInequality(Constraints c1){
+        boolean revised = false;
+
+        return revised;
+    }
 
     /**
      * getter for grid size
