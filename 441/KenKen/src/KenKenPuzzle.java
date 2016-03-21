@@ -1,7 +1,9 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Queue;
 import java.util.Scanner;
+import java.util.Stack;
 
 /**
  * Created by Josh Jacobsen on 3/2/2016.
@@ -13,7 +15,7 @@ public class KenKenPuzzle {
     private int numRows;
     private ArrayList<Constraints> constraintList = new ArrayList<Constraints>();
     private Variable[][] variablesTotal;
-
+    private boolean isNoded = false;
     private int[][] groupIndex;
     private ArrayList<Integer> queue = new ArrayList<Integer>();
 
@@ -88,7 +90,10 @@ public class KenKenPuzzle {
      */
     public void generateMove()
     {
-
+        if(isNoded == false)
+            nodeConsistency(constraintList);
+        else
+            arcConsistency(constraintList);
     }
 
     /**
@@ -109,10 +114,12 @@ public class KenKenPuzzle {
                 }
             }
         }
+        isNoded = true;
     }
 
-
-
+    /**
+     * Forms the inequality constraints and adds it to the total constraint list
+     */
     public void formInequality(){
         for(int row = 0; row < numRows; row++){
             for(int var = 0; var < numRows; var++){
@@ -131,67 +138,63 @@ public class KenKenPuzzle {
         }
     }
 
-
     /**
      * This will perform the arc consistency for the puzzle
-     * @param list - the list containing the constraints
+     * @param list - the list containing all of the constraints
      */
     public boolean arcConsistency(ArrayList<Constraints> list){
-        ArrayList<Constraints> queue = new ArrayList();
+        Stack queue = new Stack();
         boolean revised = false;
         String constrType = "";
         for(int i = 0; i < list.size(); i++){
-            queue.add(list.get(i));
+            queue.push(list.get(i));
         }
+
+        //take the top constraint of the queue and store it in a variable for reference below
+        Constraints topConstr = (Constraints) queue.pop();
+
+        /*
+        * run the revise method and pass the top constraint as the parameter
+        * if it returns true, loop through the list and find the variables that match the constraint that was passed
+        * and add that constraint to the queue again
+        */
         while (queue.size()>0){
-            revise()
-        }
-
-
-
-
-        while(queue.size()>0){
-            for(int i = 0; i < ; i++){
-                for(int j = 0; j < ; j++){
-                    if(revise(list, list.get(i).getPoints().get(i),list.get(i).getPoints().get(j)) == true){
-                        if(list.get(i).getPoints().get(j).domain.size() == 0){
-                            return false;
-                        }
-                        //for each Xk in Xi
-                        //queue.add(Xk, Xi)
+            if(revise(topConstr) == true){
+                for(int i = 0; i < list.size(); i++){
+                    if(list.get(i).getPoints() == topConstr.getPoints()){
+                        queue.push(list.get(i));
                     }
                 }
             }
         }
+
         return true;
     }
 
-
-    public boolean revise(ArrayList<Constraints> list, Variable var1, Variable var2){
+    /**
+     * Determine the passed constraint's symbol and call it's corresponding method
+     * @param c1 - the Constraint
+     * @return - true if it was revised
+     */
+    public boolean revise(Constraints c1){
         boolean revised = false;
 
-        //this will get the last item on the list and then delete it
-        while(queue.size()>0){
-            list.get(list.size()-1);
-
-            switch (list.get(list.size()-1).getArithSym()){
-                case "+": reviseAddition(list.get(list.size()-1));
-                    revised = true;
-                    break;
-                case "-": reviseSubtraction(list.get(list.size()-1));
-                    revised = true;
-                    break;
-                case "*": reviseMultiplication(list.get(list.size()-1));
-                    revised = true;
-                    break;
-                case "/": reviseDivision(list.get(list.size()-1));
-                    revised = true;
-                    break;
-                case "!=": reviseInequality(list.get(list.size()-1));
-                    revised = true;
-                    break;
-            }
-            list.remove(list.size()-1);
+        switch (c1.getArithSym()){
+            case "+": reviseAddition(c1);
+                revised = true;
+                break;
+            case "-": reviseSubtraction(c1);
+                revised = true;
+                break;
+            case "*": reviseMultiplication(c1);
+                revised = true;
+                break;
+            case "/": reviseDivision(c1);
+                revised = true;
+                break;
+            case "!=": reviseInequality(c1);
+                revised = true;
+                break;
         }
         return revised;
     }
