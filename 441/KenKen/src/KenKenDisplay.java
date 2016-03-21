@@ -63,13 +63,21 @@ public class KenKenDisplay extends JPanel {
                 for(int col = 0; col < puzzle.getNumRows(); col++){
 
                     //This will draw the grid
-                    g.setColor(Color.lightGray);
+                    g.setColor(Color.WHITE);
                     g.fillRect(start_X+divWid+(cellSize+divWid)*col, start_Y+divWid + (cellSize+divWid)*row, cellSize ,cellSize);
 
                     //code for the constraint grouping goes here
+                    g.setColor(Color.WHITE);
+                    for(int i = 0; i < puzzle.getConstraintList().size(); i++){
+                        Variable var1 = puzzle.getConstraintList().get(i).getPoints().get(0);
+                        Variable var2 = puzzle.getConstraintList().get(i).getPoints().get(1);
+                        if(var1.getRow() > var2.getRow()){
+                            g.fillRect(var1.getRow()*cellSize,);
+                        }
+                    }
 
                     //This will detect and display the assignment in the lower right of each box
-                    g.setColor(Color.RED);
+                    g.setColor(Color.BLACK);
                     g.setFont(bigFont);
                     for(int c = 0; c < puzzle.getConstraintList().size(); c++){
                         for(int p = 0; p < puzzle.getConstraintList().get(c).getPoints().size(); p++){
@@ -83,7 +91,7 @@ public class KenKenDisplay extends JPanel {
                     }
 
                     //This will detect and display the constraint solution and symbol in the top left of the first box in the constraint list
-                    g.setColor(Color.BLUE);
+                    g.setColor(Color.BLACK);
                     g.setFont(smallFont);
                     for(int i = 0; i < puzzle.getConstraintList().size(); i++){
                         g.drawString(""+puzzle.getConstraintList().get(i).getArithSol()+puzzle.getConstraintList().get(i).getArithSym(),
