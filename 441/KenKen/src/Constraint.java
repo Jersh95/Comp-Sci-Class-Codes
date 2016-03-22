@@ -4,8 +4,10 @@ import java.util.ArrayList;
  * Created by Josh on 3/2/2016.
  * Program Purpose:
  *  This program will take in a user chosen file representing a KenKen puzzle and solve it through node and arc consistency while displaying it with GUI
+ *
+ *  The Constraint class stores the information for each constraint
  */
-public class Constraints {
+public class Constraint {
     private int arithSol;
     private String arithSym;
     private ArrayList<Variable> variables = new ArrayList<Variable>();
@@ -16,7 +18,7 @@ public class Constraints {
      * @param arithSol - the solution the Constraints must equate to
      * @param arithSym - the arithmetic symbol that the Constraints must use to equate to the Sol
      */
-    public Constraints(ArrayList<Variable> variabels, int arithSol, String arithSym) {
+    public Constraint(ArrayList<Variable> variabels, int arithSol, String arithSym) {
         this.variables = variabels;
         this.arithSym = arithSym;
         this.arithSol = arithSol;

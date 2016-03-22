@@ -3,6 +3,7 @@
  * Program Purpose:
  *  This program will take in a user chosen file representing a KenKen puzzle and solve it through node and arc consistency while displaying it with GUI
  *
+ *  The KenKenDriver class acts as the program driver
  */
 public class KenKenDriver {
     /**

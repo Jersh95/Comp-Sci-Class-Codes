@@ -4,6 +4,8 @@ import java.util.ArrayList;
  * Created by Josh on 3/9/2016.
  * Program Purpose:
  *  This program will take in a user chosen file representing a KenKen puzzle and solve it through node and arc consistency while displaying it with GUI
+ *
+ *  The Variable class stores the information for the variables inside each Constraint
  */
 public class Variable {
     boolean isAssigned;
@@ -51,7 +53,6 @@ public class Variable {
         domain = new ArrayList<Integer>();
         for(int i = 1; i <= size; i++){
             domain.add(i);
-            //System.out.println("Domain Index: " + i);
         }
     }
 
@@ -92,10 +93,6 @@ public class Variable {
      * @return - the assignment value
      */
     public int getAssignment() {
-        return assignment;
-    }
-
-    public int getAssignment(int row, int col) {
         return assignment;
     }
 

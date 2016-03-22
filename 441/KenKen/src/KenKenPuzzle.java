@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Queue;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -9,11 +8,13 @@ import java.util.Stack;
  * Created by Josh Jacobsen on 3/2/2016.
  * Program Purpose:
  *  This program will take in a user chosen file representing a KenKen puzzle and solve it through node and arc consistency while displaying it with GUI
+ *
+ *  The KenKenPuzzle class handles anything related to calculations and functions affecting the puzzle
  */
 public class KenKenPuzzle {
     private String[][] puzzle;
     private int numRows;
-    private ArrayList<Constraints> constraintList = new ArrayList<Constraints>();
+    private ArrayList<Constraint> constraintList = new ArrayList<Constraint>();
     private Variable[][] variablesTotal;
     private boolean isNoded = false;
     private int[][] groupIndex;
@@ -55,16 +56,11 @@ public class KenKenPuzzle {
                 ArrayList<Variable> varList = new ArrayList<Variable>();
                 while (scanner.hasNextInt()) {
                     int row = scanner.nextInt();
-                    System.out.println("Row: " + row);
                     int col = scanner.nextInt();
-                    System.out.println("Col: " + col);
                     Variable variable = variablesTotal[row][col];
                     varList.add(variable);
 
                     groupIndex[row][col] = constrCount;
-                    System.out.println("COUNT: " + constrCount);
-                    System.out.println("GRID: " + groupIndex[row][col]);
-                    System.out.println("---------------");
                 }
 
                 //This will read in everything after the last point, the colon, the solution value, and the solution arithmetic symbol
@@ -73,11 +69,9 @@ public class KenKenPuzzle {
                 sol = Integer.parseInt(temp.substring(2, temp.length() - 1));
 
                 //Add each constraint to the ArrayList
-                Constraints constraint = new Constraints(varList, sol, sym);
+                Constraint constraint = new Constraint(varList, sol, sym);
                 this.constraintList.add(constraint);
                 constrCount++;
-                System.out.println("Sym: " + constraintList.get(constraintList.size()-1).getArithSol() + constraintList.get(constraintList.size()-1).getArithSym());
-                //System.out.println(varList.get(1).);
             }
 
         } catch (FileNotFoundException e) {
@@ -100,7 +94,7 @@ public class KenKenPuzzle {
      * This will perform the node consistency for the puzzle
      * @param list - the list containing the constraints
      */
-    public void nodeConsistency(ArrayList<Constraints> list){
+    public void nodeConsistency(ArrayList<Constraint> list){
         for(int i = 0; i < list.size(); i ++){
             if(list.get(i).getArithSym().equals("=")) {
                 list.get(i).getPoints().get(0).setAssignment(list.get(i).getArithSol());
@@ -140,7 +134,7 @@ public class KenKenPuzzle {
                         ArrayList<Variable> conVars = new ArrayList<Variable>();
                         conVars.add(var1);
                         conVars.add(var2);
-                        Constraints constr = new Constraints(conVars, 0, "!=");
+                        Constraint constr = new Constraint(conVars, 0, "!=");
                         constraintList.add(constr);
                     }
                 }
@@ -152,7 +146,7 @@ public class KenKenPuzzle {
      * This will perform the arc consistency for the puzzle
      * @param list - the list containing all of the constraints
      */
-    public boolean arcConsistency(ArrayList<Constraints> list){
+    public boolean arcConsistency(ArrayList<Constraint> list){
         Stack queue = new Stack();
         boolean revised = false;
         String constrType = "";
@@ -161,7 +155,7 @@ public class KenKenPuzzle {
         }
 
         //take the top constraint of the queue and store it in a variable for reference below
-        Constraints topConstr = (Constraints) queue.pop();
+        Constraint topConstr = (Constraint) queue.pop();
 
         /*
         * run the revise method and pass the top constraint as the parameter
@@ -186,7 +180,7 @@ public class KenKenPuzzle {
      * @param c1 - the Constraint
      * @return - true if it was revised
      */
-    public boolean revise(Constraints c1){
+    public boolean revise(Constraint c1){
         boolean revised = false;
 
         switch (c1.getArithSym()){
@@ -214,11 +208,11 @@ public class KenKenPuzzle {
      * @param c1 - the Constraint
      * @return - true if it was revised
      */
-    public boolean reviseInequality(Constraints c1){
+    public boolean reviseInequality(Constraint c1){
         boolean revised = false;
         Variable var1 = c1.getVariable(0);
         Variable var2 = c1.getVariable(1);
-        
+
 
         return revised;
     }
@@ -228,7 +222,7 @@ public class KenKenPuzzle {
      * @param c1 - the Constraint
      * @return - true if it was revised
      */
-    public boolean reviseAddition(Constraints c1){
+    public boolean reviseAddition(Constraint c1){
         Variable var1 = c1.getVariable(0);
         Variable var2 = c1.getVariable(1);
         boolean revised = false;
@@ -254,7 +248,7 @@ public class KenKenPuzzle {
      * @param c1 - the Constraint
      * @return - true if it was revised
      */
-    public boolean reviseMultiplication(Constraints c1){
+    public boolean reviseMultiplication(Constraint c1){
         Variable var1 = c1.getVariable(0);
         Variable var2 = c1.getVariable(1);
         boolean revised = false;
@@ -280,7 +274,7 @@ public class KenKenPuzzle {
      * @param c1 - the Constraint
      * @return - true if it was revised
      */
-    public boolean reviseSubtraction(Constraints c1){
+    public boolean reviseSubtraction(Constraint c1){
         boolean revised = false;
 
         return revised;
@@ -291,7 +285,7 @@ public class KenKenPuzzle {
      * @param c1 - the Constraint
      * @return - true if it was revised
      */
-    public boolean reviseDivision(Constraints c1){
+    public boolean reviseDivision(Constraint c1){
         boolean revised = false;
 
         return revised;
@@ -314,34 +308,11 @@ public class KenKenPuzzle {
     }
 
     /**
-     * getter for group index
-     * @return - the group index
-     */
-    public int[][] getGroupIndex() {
-        return groupIndex;
-    }
-
-    /**
-     * setter for group index
-     * @param groupIndex - group index
-     */
-    public void setGroupIndex(int[][] groupIndex) {
-        this.groupIndex = groupIndex;
-    }
-
-    /**
      * getter for constraint list
      * @return - the list
      */
-    public ArrayList<Constraints> getConstraintList() {
+    public ArrayList<Constraint> getConstraintList() {
         return constraintList;
     }
 
-    /**
-     * setter for constraint list
-     * @param constraintList - the list
-     */
-    public void setConstraintList(ArrayList<Constraints> constraintList) {
-        this.constraintList = constraintList;
-    }
 }

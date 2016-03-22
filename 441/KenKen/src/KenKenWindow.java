@@ -5,6 +5,8 @@ import java.io.File;
  * Created by Josh on 3/2/2016.
  * Program Purpose:
  *  This program will take in a user chosen file representing a KenKen puzzle and solve it through node and arc consistency while displaying it with GUI
+ *
+ *  The KenKenWindow class displays the window and menu for the puzzle
  */
 public class KenKenWindow extends JFrame{
     private int win_wid = 600;
@@ -25,7 +27,7 @@ public class KenKenWindow extends JFrame{
     }
 
     /**
-     * this will build the menu bar and buttons for the window
+     * Build the menu bar and buttons for the window
      */
     public void buildMenu(){
         //creating the menu bar instance
@@ -114,7 +116,7 @@ public class KenKenWindow extends JFrame{
     }
 
     /**
-     * This will paint the user selected puzzle
+     * Paint the user selected puzzle
      */
     public void changeRows()
     {
@@ -137,31 +139,4 @@ public class KenKenWindow extends JFrame{
      * getter for the window width
      * @return - the width
      */
-    public int getWin_wid() {
-        return win_wid;
-    }
-
-    /**
-     * getter for window height
-     * @return - the height
-     */
-    public int getWin_hei() {
-        return win_hei;
-    }
-
-    /**
-     * getter for the puzzle
-     * @return - the puzzle
-     */
-    public KenKenPuzzle getPuzzle() {
-        return puzzle;
-    }
-
-    /**
-     * getter for the display
-     * @return - the display
-     */
-    public KenKenDisplay getDisplay() {
-        return display;
-    }
 }
