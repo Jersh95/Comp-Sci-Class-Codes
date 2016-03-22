@@ -102,44 +102,25 @@ public class KenKenPuzzle {
      */
     public void nodeConsistency(ArrayList<Constraints> list){
         for(int i = 0; i < list.size(); i ++){
-            if(list.get(i).getArithSym().equals("=")){
+            if(list.get(i).getArithSym().equals("=")) {
                 list.get(i).getPoints().get(0).setAssignment(list.get(i).getArithSol());
                 list.get(i).getPoints().get(0).setAssigned(true);
 
                 //this will loop through the domain and remove everything except what it is assigned to
-                System.out.println("Domain: " + list.get(i).getPoints().get(0).getDomain());
-                while(list.get(i).getPoints().get(0).domain.size()>1){
-                    System.out.println("Domain Before:    Size:" +  list.get(i).getPoints().get(0).domain.size() + " " + list.get(i).getPoints().get(0).getDomain());
+                while (list.get(i).getPoints().get(0).domain.size() > 1) {
 
-
-                    if(list.get(i).getPoints().get(0).getAssignment() != list.get(i).getPoints().get(0).getDomain().get(list.get(i).getPoints().get(0).domain.size()-1)){
-                        list.get(i).getPoints().get(0).domain.remove(list.get(i).getPoints().get(0).domain.size()-1);
+                    //check to see if the assignment matches the last item in the domain array, remove it if it does not match
+                    if (list.get(i).getPoints().get(0).getAssignment() != list.get(i).getPoints().get(0).getDomain().get(list.get(i).getPoints().get(0).domain.size() - 1)) {
+                        list.get(i).getPoints().get(0).domain.remove(list.get(i).getPoints().get(0).domain.size() - 1);
                     }
-                    else if(list.get(i).getPoints().get(0).getAssignment() != list.get(i).getPoints().get(0).getDomain().get(list.get(i).getPoints().get(0).domain.size()-2)){
-                        if(list.get(i).getPoints().get(0).getAssignment() != list.get(i).getPoints().get(0).getDomain().get(list.get(i).getPoints().get(0).domain.size()-2)){
-                            list.get(i).getPoints().get(0).domain.remove(list.get(i).getPoints().get(0).domain.size()-2);
+
+                    //if the assignment matches the last item in the domain array, check the item below it, remove it if it does not match
+                    else if (list.get(i).getPoints().get(0).getAssignment() != list.get(i).getPoints().get(0).getDomain().get(list.get(i).getPoints().get(0).domain.size() - 2)) {
+                        if (list.get(i).getPoints().get(0).getAssignment() != list.get(i).getPoints().get(0).getDomain().get(list.get(i).getPoints().get(0).domain.size() - 2)) {
+                            list.get(i).getPoints().get(0).domain.remove(list.get(i).getPoints().get(0).domain.size() - 2);
                         }
                     }
-
-                    //System.out.println("Value removed: " + list.get(i).getPoints().get(0).domain.size() + "-1");
-                    System.out.println("Domain After:    Size:" +  list.get(i).getPoints().get(0).domain.size() + " " + list.get(i).getPoints().get(0).getDomain() + "\n----------------------");
                 }
-
-//                for(int j = 1; j <=getNumRows(); j++){
-//                    if(j != list.get(i).getPoints().get(0).getAssignment()){
-//                        System.out.println("Domain Before:    Size:" +  list.get(i).getPoints().get(0).domain.size() + " " + list.get(i).getPoints().get(0).getDomain());
-//                        list.get(i).getPoints().get(0).domain.remove(j-1);
-//                        System.out.println("Value removed: " + j);
-//                        System.out.println("Domain After:    Size:" +  list.get(i).getPoints().get(0).domain.size() + " " + list.get(i).getPoints().get(0).getDomain() + "\n----------------------");
-//                    }
-//                }
-
-//                for(int j = 1; j <= getNumRows(); j++) {
-//                    if(j != list.get(i).getPoints().get(0).getAssignment()) {
-//                        System.out.println("Domain: " + list.get(i).getPoints().get(0).getDomain());
-//                        list.get(i).getPoints().get(0).domain.remove(j-1);
-//                    }
-//                }
             }
         }
         System.out.println("Node Consistency Performed");
@@ -229,6 +210,20 @@ public class KenKenPuzzle {
     }
 
     /**
+     * Revises the inequality constraints
+     * @param c1 - the Constraint
+     * @return - true if it was revised
+     */
+    public boolean reviseInequality(Constraints c1){
+        boolean revised = false;
+        Variable var1 = c1.getVariable(0);
+        Variable var2 = c1.getVariable(1);
+        
+
+        return revised;
+    }
+
+    /**
      * Revises the addition constraints
      * @param c1 - the Constraint
      * @return - true if it was revised
@@ -297,17 +292,6 @@ public class KenKenPuzzle {
      * @return - true if it was revised
      */
     public boolean reviseDivision(Constraints c1){
-        boolean revised = false;
-
-        return revised;
-    }
-
-    /**
-     * Revises the inequality constraints
-     * @param c1 - the Constraint
-     * @return - true if it was revised
-     */
-    public boolean reviseInequality(Constraints c1){
         boolean revised = false;
 
         return revised;
