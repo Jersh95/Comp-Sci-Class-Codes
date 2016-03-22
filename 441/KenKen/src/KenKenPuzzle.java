@@ -107,13 +107,42 @@ public class KenKenPuzzle {
                 list.get(i).getPoints().get(0).setAssigned(true);
 
                 //this will loop through the domain and remove everything except what it is assigned to
-                for(int j = 1; j <= getNumRows(); j++) {
-                    if(j != list.get(i).getPoints().get(0).getAssignment()) {
-                        list.get(i).getPoints().get(0).domain.remove(j);
+                System.out.println("Domain: " + list.get(i).getPoints().get(0).getDomain());
+                while(list.get(i).getPoints().get(0).domain.size()>1){
+                    System.out.println("Domain Before:    Size:" +  list.get(i).getPoints().get(0).domain.size() + " " + list.get(i).getPoints().get(0).getDomain());
+
+
+                    if(list.get(i).getPoints().get(0).getAssignment() != list.get(i).getPoints().get(0).getDomain().get(list.get(i).getPoints().get(0).domain.size()-1)){
+                        list.get(i).getPoints().get(0).domain.remove(list.get(i).getPoints().get(0).domain.size()-1);
                     }
+                    else if(list.get(i).getPoints().get(0).getAssignment() != list.get(i).getPoints().get(0).getDomain().get(list.get(i).getPoints().get(0).domain.size()-2)){
+                        if(list.get(i).getPoints().get(0).getAssignment() != list.get(i).getPoints().get(0).getDomain().get(list.get(i).getPoints().get(0).domain.size()-2)){
+                            list.get(i).getPoints().get(0).domain.remove(list.get(i).getPoints().get(0).domain.size()-2);
+                        }
+                    }
+
+                    //System.out.println("Value removed: " + list.get(i).getPoints().get(0).domain.size() + "-1");
+                    System.out.println("Domain After:    Size:" +  list.get(i).getPoints().get(0).domain.size() + " " + list.get(i).getPoints().get(0).getDomain() + "\n----------------------");
                 }
+
+//                for(int j = 1; j <=getNumRows(); j++){
+//                    if(j != list.get(i).getPoints().get(0).getAssignment()){
+//                        System.out.println("Domain Before:    Size:" +  list.get(i).getPoints().get(0).domain.size() + " " + list.get(i).getPoints().get(0).getDomain());
+//                        list.get(i).getPoints().get(0).domain.remove(j-1);
+//                        System.out.println("Value removed: " + j);
+//                        System.out.println("Domain After:    Size:" +  list.get(i).getPoints().get(0).domain.size() + " " + list.get(i).getPoints().get(0).getDomain() + "\n----------------------");
+//                    }
+//                }
+
+//                for(int j = 1; j <= getNumRows(); j++) {
+//                    if(j != list.get(i).getPoints().get(0).getAssignment()) {
+//                        System.out.println("Domain: " + list.get(i).getPoints().get(0).getDomain());
+//                        list.get(i).getPoints().get(0).domain.remove(j-1);
+//                    }
+//                }
             }
         }
+        System.out.println("Node Consistency Performed");
         isNoded = true;
     }
 
