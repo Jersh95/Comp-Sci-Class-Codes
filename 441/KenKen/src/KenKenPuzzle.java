@@ -72,6 +72,8 @@ public class KenKenPuzzle {
                 Constraint constraint = new Constraint(varList, sol, sym);
                 this.constraintList.add(constraint);
                 constrCount++;
+
+                //formInequality();
             }
 
         } catch (FileNotFoundException e) {
@@ -82,12 +84,13 @@ public class KenKenPuzzle {
     /**
      * This will generate the next arc constency step once the user clicks the screen
      */
-    public void generateMove()
-    {
-        if(isNoded == false)
+    public void generateMove() {
+
+        if (isNoded == false)
             nodeConsistency(constraintList);
-        else
+        else {
             arcConsistency(constraintList);
+        }
     }
 
     /**
@@ -147,6 +150,7 @@ public class KenKenPuzzle {
      * @param list - the list containing all of the constraints
      */
     public boolean arcConsistency(ArrayList<Constraint> list){
+        System.out.println("Arc Consistency Attempted");
         Stack queue = new Stack();
         boolean revised = false;
         String constrType = "";
@@ -154,24 +158,27 @@ public class KenKenPuzzle {
             queue.push(list.get(i));
         }
 
-        //take the top constraint of the queue and store it in a variable for reference below
-        Constraint topConstr = (Constraint) queue.pop();
-
         /*
         * run the revise method and pass the top constraint as the parameter
         * if it returns true, loop through the list and find the variables that match the constraint that was passed
         * and add that constraint to the queue again
         */
         while (queue.size()>0){
+            Constraint topConstr = (Constraint) queue.pop();
+            System.out.println("Top Constr: " + topConstr.getPoints());
             if(revise(topConstr) == true){
                 for(int i = 0; i < list.size(); i++){
                     if(list.get(i).getPoints() == topConstr.getPoints()){
                         queue.push(list.get(i));
+                        System.out.println("\n----------------------\ni: " + i);
+                        for(int j = 0; j < list.get(i).getPoints().size(); j++) {
+                            System.out.println("Points: " + list.get(i).getPoints());
+                            System.out.println("Domain: " +list.get(i).getPoints().get(j).getDomain());
+                        }
                     }
                 }
             }
         }
-
         return true;
     }
 
@@ -209,10 +216,9 @@ public class KenKenPuzzle {
      * @return - true if it was revised
      */
     public boolean reviseInequality(Constraint c1){
+        //Variable var1 = c1.getVariable(0);
+        //Variable var2 = c1.getVariable(1);
         boolean revised = false;
-        Variable var1 = c1.getVariable(0);
-        Variable var2 = c1.getVariable(1);
-
 
         return revised;
     }
@@ -275,8 +281,34 @@ public class KenKenPuzzle {
      * @return - true if it was revised
      */
     public boolean reviseSubtraction(Constraint c1){
+        Variable var1 = c1.getVariable(0);
+        Variable var2 = c1.getVariable(1);
         boolean revised = false;
+        for(int i = 0; i < var1.domain.size(); i++){
+            int neededValue1 = c1.getArithSol()+var1.domain.get(i);
+            int neededValue2 = c1.getArithSol()+var2.domain.get(i);
+            if(!var2.domainContains(neededValue1)){
+                var1.domain.remove(i);
+                revised = true;
+            }
+            if(!var2.domainContains(neededValue2)){
+                var1.domain.remove(i);
+                revised = true;
+            }
+        }
 
+        for(int i = 0; i < var1.domain.size(); i++){
+            int neededValue1 = c1.getArithSol()+var1.domain.get(i);
+            int neededValue2 = c1.getArithSol()+var2.domain.get(i);
+            if(!var1.domainContains(neededValue1)){
+                var1.domain.remove(i);
+                revised = true;
+            }
+            if(!var1.domainContains(neededValue2)){
+                var2.domain.remove(i);
+                revised = true;
+            }
+        }
         return revised;
     }
 
@@ -286,8 +318,34 @@ public class KenKenPuzzle {
      * @return - true if it was revised
      */
     public boolean reviseDivision(Constraint c1){
+        Variable var1 = c1.getVariable(0);
+        Variable var2 = c1.getVariable(1);
         boolean revised = false;
+        for(int i = 0; i < var1.domain.size(); i++){
+            int neededValue1 = c1.getArithSol()*var1.domain.get(i);
+            int neededValue2 = c1.getArithSol()*var2.domain.get(i);
+            if(!var2.domainContains(neededValue1)){
+                var1.domain.remove(i);
+                revised = true;
+            }
+            if(!var2.domainContains(neededValue2)){
+                var1.domain.remove(i);
+                revised = true;
+            }
+        }
 
+        for(int i = 0; i < var1.domain.size(); i++){
+            int neededValue1 = c1.getArithSol()*var1.domain.get(i);
+            int neededValue2 = c1.getArithSol()*var2.domain.get(i);
+            if(!var1.domainContains(neededValue1)){
+                var1.domain.remove(i);
+                revised = true;
+            }
+            if(!var1.domainContains(neededValue2)){
+                var2.domain.remove(i);
+                revised = true;
+            }
+        }
         return revised;
     }
 
