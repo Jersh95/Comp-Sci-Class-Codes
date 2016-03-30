@@ -73,7 +73,7 @@ public class KenKenPuzzle {
                 this.constraintList.add(constraint);
                 constrCount++;
 
-                //formInequality();
+                formInequality();
             }
 
         } catch (FileNotFoundException e) {
@@ -189,7 +189,6 @@ public class KenKenPuzzle {
      */
     public boolean revise(Constraint c1){
         boolean revised = false;
-
         switch (c1.getArithSym()){
             case "+": reviseAddition(c1);
                 revised = true;
@@ -216,8 +215,8 @@ public class KenKenPuzzle {
      * @return - true if it was revised
      */
     public boolean reviseInequality(Constraint c1){
-        //Variable var1 = c1.getVariable(0);
-        //Variable var2 = c1.getVariable(1);
+        Variable var1 = c1.getVariable(0);
+        Variable var2 = c1.getVariable(1);
         boolean revised = false;
 
         return revised;

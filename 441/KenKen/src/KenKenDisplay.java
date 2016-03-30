@@ -71,20 +71,22 @@ public class KenKenDisplay extends JPanel {
                     //create the thin line to represent constraint grouping
                     g.setColor(Color.WHITE);
                     for(int i = 0; i < puzzle.getConstraintList().size(); i++) {
-                        if (puzzle.getConstraintList().get(i).getPoints().size() > 1) {
-                            Variable var1 = puzzle.getConstraintList().get(i).getPoints().get(0);
-                            Variable var2 = puzzle.getConstraintList().get(i).getPoints().get(1);
-                            //System.out.println("got here");
+                        if (!puzzle.getConstraintList().get(i).getArithSym().equals("!=")) {
+                            if (puzzle.getConstraintList().get(i).getPoints().size() > 1) {
+                                Variable var1 = puzzle.getConstraintList().get(i).getPoints().get(0);
+                                Variable var2 = puzzle.getConstraintList().get(i).getPoints().get(1);
+                                //System.out.println("got here");
 
-                            //handles the verticle constraints
-                            if (var2.getRow() > var1.getRow() && var1.getCol() == var2.getCol()) {
-                                g.fillRect(start_X + var1.getCol() * (cellSize+divWid) + divWid, start_Y+var2.getRow() * (cellSize + divWid), cellSize, divWid-2);
-                                //g.fillRect(start_X + 2*(divWid+cellSize) + divWid, start_Y + 1 * (divWid+cellSize), cellSize, divWid-2);
-                            }
+                                //handles the verticle constraints
+                                if (var2.getRow() > var1.getRow() && var1.getCol() == var2.getCol()) {
+                                    g.fillRect(start_X + var1.getCol() * (cellSize + divWid) + divWid, start_Y + var2.getRow() * (cellSize + divWid), cellSize, divWid - 2);
+                                    //g.fillRect(start_X + 2*(divWid+cellSize) + divWid, start_Y + 1 * (divWid+cellSize), cellSize, divWid-2);
+                                }
 
-                            //handles the horizontal constraints
-                            if(var2.getCol() > var1.getCol() && var1.getRow() == var2.getRow()){
-                                g.fillRect(start_X + var2.getCol() * (cellSize+divWid), start_Y+var2.getRow() * (cellSize + divWid) + divWid,divWid -2, cellSize);
+                                //handles the horizontal constraints
+                                if (var2.getCol() > var1.getCol() && var1.getRow() == var2.getRow()) {
+                                    g.fillRect(start_X + var2.getCol() * (cellSize + divWid), start_Y + var2.getRow() * (cellSize + divWid) + divWid, divWid - 2, cellSize);
+                                }
                             }
                         }
                     }
@@ -106,10 +108,12 @@ public class KenKenDisplay extends JPanel {
                     //This will detect and display the constraint solution and symbol in the top left of the first box in the constraint list
                     g.setColor(Color.BLACK);
                     g.setFont(smallFont);
-                    for(int i = 0; i < puzzle.getConstraintList().size(); i++){
-                        g.drawString(""+puzzle.getConstraintList().get(i).getArithSol()+puzzle.getConstraintList().get(i).getArithSym(),
-                                start_X  + divWid+(cellSize+divWid)*puzzle.getConstraintList().get(i).getPoints().get(0).getCol(), start_Y+divWid+(cellSize+divWid)*puzzle.getConstraintList().get(i).getPoints().get(0).getRow()+offSet_Constr_Y);
-                        //System.out.println(puzzle.getConstraintList().get(i).getArithSym() + puzzle.getConstraintList().get(i).getArithSol());
+                    for(int i = 0; i < puzzle.getConstraintList().size(); i++) {
+                        if (!puzzle.getConstraintList().get(i).getArithSym().equals("!=")) {
+                            g.drawString("" + puzzle.getConstraintList().get(i).getArithSol() + puzzle.getConstraintList().get(i).getArithSym(),
+                                    start_X + divWid + (cellSize + divWid) * puzzle.getConstraintList().get(i).getPoints().get(0).getCol(), start_Y + divWid + (cellSize + divWid) * puzzle.getConstraintList().get(i).getPoints().get(0).getRow() + offSet_Constr_Y);
+                            //System.out.println(puzzle.getConstraintList().get(i).getArithSym() + puzzle.getConstraintList().get(i).getArithSol());
+                        }
                     }
                 }
             }
