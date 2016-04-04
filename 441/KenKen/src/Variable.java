@@ -81,6 +81,14 @@ public class Variable {
     }
 
     /**
+     * create a setdomain instead of removing the domain
+     */
+    public void setSingleton (int value){
+        domain = new ArrayList<Integer>();
+        domain.add(value);
+    }
+
+    /**
      * getter to determine if the variable has been assigned
      * @return - if the variable has been assigned
      */
@@ -111,4 +119,6 @@ public class Variable {
     public void setAssigned(boolean assigned) {
         isAssigned = assigned;
     }
+
+
 }

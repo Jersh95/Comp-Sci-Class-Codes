@@ -94,14 +94,20 @@ public class KenKenDisplay extends JPanel {
                     //This will detect and display the assignment in the lower right of each box
                     g.setColor(Color.BLACK);
                     g.setFont(bigFont);
-                    for(int c = 0; c < puzzle.getConstraintList().size(); c++){
-                        for(int p = 0; p < puzzle.getConstraintList().get(c).getPoints().size(); p++){
-                            if(puzzle.getConstraintList().get(c).getPoints().get(p).isAssigned() && puzzle.getConstraintList().get(c).getPoints().get(p).getAssignment() > 0) {
-                                g.drawString("" + puzzle.getConstraintList().get(c).getPoints().get(p).getAssignment(), start_X +
-                                                divWid + (cellSize + divWid) * puzzle.getConstraintList().get(p).getPoints().get(p).getCol() + offSet_Solution_X,
-                                        start_Y + divWid + (cellSize + divWid) * puzzle.getConstraintList().get(p).getPoints().get(p).getRow() + offSet_Solution_Y);
-                                //System.out.println(puzzle.getConstraintList().get(c).getPoints().get(p).getAssignment());
+                    for(int row1 = 0; row1 < puzzle.getNumRows(); row1++){
+                        for(int col1 = 0; col1 < puzzle.getNumRows(); col1++){
+                            if(puzzle.isAssigned(row1,col1)){
+                                g.drawString("" + puzzle.returnAssignment(row1,col1), start_X +
+                                                divWid + (cellSize + divWid) * col1 + offSet_Solution_X,
+                                        start_Y + divWid + (cellSize + divWid) * row1 + offSet_Solution_Y);
                             }
+
+//                            if(puzzle.getConstraintList().get(c).getPoints().get(p).isAssigned() && puzzle.getConstraintList().get(c).getPoints().get(p).getAssignment() > 0) {
+//                                g.drawString("" + puzzle.getConstraintList().get(c).getPoints().get(p).getAssignment(), start_X +
+//                                                divWid + (cellSize + divWid) * puzzle.getConstraintList().get(p).getPoints().get(p).getCol() + offSet_Solution_X,
+//                                        start_Y + divWid + (cellSize + divWid) * puzzle.getConstraintList().get(p).getPoints().get(p).getRow() + offSet_Solution_Y);
+                                //System.out.println(puzzle.getConstraintList().get(c).getPoints().get(p).getAssignment());
+                            //}
                         }
                     }
 

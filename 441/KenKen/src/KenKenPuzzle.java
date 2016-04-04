@@ -69,12 +69,17 @@ public class KenKenPuzzle {
                 sol = Integer.parseInt(temp.substring(2, temp.length() - 1));
 
                 //Add each constraint to the ArrayList
+                System.out.println("solution: " + sol + " symbol: " + sym);
                 Constraint constraint = new Constraint(varList, sol, sym);
                 this.constraintList.add(constraint);
                 constrCount++;
 
-                formInequality();
+
             }
+
+            System.out.println("Constraint list size: " + constraintList.size());
+            formInequality();
+            System.out.println("New Constraint list size: " + constraintList.size());
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -85,9 +90,20 @@ public class KenKenPuzzle {
      * This will generate the next arc constency step once the user clicks the screen
      */
     public void generateMove() {
-
-        if (isNoded == false)
+        //printConstr(constraintList);
+        for(int row = 0; row < variablesTotal.length; row++) {
+            for(int col = 0; col < variablesTotal[row].length; col++) {
+                System.out.println("Variables total: " + variablesTotal[row][col].toString());
+            }
+        }
+        if (isNoded == false){
             nodeConsistency(constraintList);
+            for(int row = 0; row < variablesTotal.length; row++) {
+                for (int col = 0; col < variablesTotal[row].length; col++) {
+                    System.out.println("Variables total: " + variablesTotal[row][col].toString());
+                }
+            }
+        }
         else {
             arcConsistency(constraintList);
         }
@@ -100,24 +116,13 @@ public class KenKenPuzzle {
     public void nodeConsistency(ArrayList<Constraint> list){
         for(int i = 0; i < list.size(); i ++){
             if(list.get(i).getArithSym().equals("=")) {
-                list.get(i).getPoints().get(0).setAssignment(list.get(i).getArithSol());
-                list.get(i).getPoints().get(0).setAssigned(true);
+                System.out.println("inside the if loop");
+                Variable curVar =  list.get(i).getPoints().get(0);
+                int val = list.get(i).getArithSol();
+                curVar.setAssignment(val);
+                curVar.setAssigned(true);
+                curVar.setSingleton(val);
 
-                //this will loop through the domain and remove everything except what it is assigned to
-                while (list.get(i).getPoints().get(0).domain.size() > 1) {
-
-                    //check to see if the assignment matches the last item in the domain array, remove it if it does not match
-                    if (list.get(i).getPoints().get(0).getAssignment() != list.get(i).getPoints().get(0).getDomain().get(list.get(i).getPoints().get(0).domain.size() - 1)) {
-                        list.get(i).getPoints().get(0).domain.remove(list.get(i).getPoints().get(0).domain.size() - 1);
-                    }
-
-                    //if the assignment matches the last item in the domain array, check the item below it, remove it if it does not match
-                    else if (list.get(i).getPoints().get(0).getAssignment() != list.get(i).getPoints().get(0).getDomain().get(list.get(i).getPoints().get(0).domain.size() - 2)) {
-                        if (list.get(i).getPoints().get(0).getAssignment() != list.get(i).getPoints().get(0).getDomain().get(list.get(i).getPoints().get(0).domain.size() - 2)) {
-                            list.get(i).getPoints().get(0).domain.remove(list.get(i).getPoints().get(0).domain.size() - 2);
-                        }
-                    }
-                }
             }
         }
         System.out.println("Node Consistency Performed");
@@ -132,7 +137,7 @@ public class KenKenPuzzle {
             for(int var = 0; var < numRows; var++){
                 for(int col = 0; col < numRows; col++){
                     if(var != col) {
-                        Variable var1 = variablesTotal[var][col];
+                        Variable var1 = variablesTotal[row][var];
                         Variable var2 = variablesTotal[row][col];
                         ArrayList<Variable> conVars = new ArrayList<Variable>();
                         conVars.add(var1);
@@ -165,15 +170,15 @@ public class KenKenPuzzle {
         */
         while (queue.size()>0){
             Constraint topConstr = (Constraint) queue.pop();
-            System.out.println("Top Constr: " + topConstr.getPoints());
+            //System.out.println("Top Constr: " + topConstr.getPoints());
             if(revise(topConstr) == true){
                 for(int i = 0; i < list.size(); i++){
                     if(list.get(i).getPoints() == topConstr.getPoints()){
                         queue.push(list.get(i));
-                        System.out.println("\n----------------------\ni: " + i);
+                        //System.out.println("\n----------------------\ni: " + i);
                         for(int j = 0; j < list.get(i).getPoints().size(); j++) {
-                            System.out.println("Points: " + list.get(i).getPoints());
-                            System.out.println("Domain: " +list.get(i).getPoints().get(j).getDomain());
+                            //System.out.println("Points: " + list.get(i).getPoints());
+                            //System.out.println("Domain: " +list.get(i).getPoints().get(j).getDomain());
                         }
                     }
                 }
@@ -370,6 +375,21 @@ public class KenKenPuzzle {
      */
     public ArrayList<Constraint> getConstraintList() {
         return constraintList;
+    }
+
+    public void printConstr(ArrayList<Constraint> list){
+        for(int i = 0; i < list.size(); i ++){
+            System.out.println(list.get(i).toString());
+        }
+
+    }
+
+    public boolean isAssigned(int row, int col){
+        return variablesTotal[row][col].isAssigned();
+    }
+
+    public int returnAssignment(int row, int col){
+        return variablesTotal[row][col].getAssignment();
     }
 
 }

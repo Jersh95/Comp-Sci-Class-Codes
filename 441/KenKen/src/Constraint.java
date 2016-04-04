@@ -51,4 +51,16 @@ public class Constraint {
     public Variable getVariable(int index){
         return variables.get(index);
     }
+
+    public String toString(){
+        String result = "variables length: " + variables.size();
+        //result+=("--------------\nVariables: " + variables);
+        for(int i = 0; i < variables.size(); i ++){
+            result += " " + variables.get(i).row + variables.get(i).col+",";
+            //result +=("Variable " + i + " domain: " + variables.get(i).getDomain());
+        }
+        result+=(" Symbol: " + arithSym);
+        result+=(" Solution: " + arithSol);
+        return result;
+    }
 }
