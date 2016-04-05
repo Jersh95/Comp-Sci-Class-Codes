@@ -70,6 +70,49 @@ public class KenKenDisplay extends JPanel {
 
                     //create the thin line to represent constraint grouping
                     g.setColor(Color.WHITE);
+                    for(int j = 0; j < puzzle.getConstraintList().size(); j++){
+                        if(!puzzle.getConstraintList().get(j).getArithSym().equals("!=") && !puzzle.getConstraintList().get(j).getArithSym().equals("=")){
+                            //if(!puzzle.getConstraintList().get(j).equals("!=") && !puzzle.getConstraintList().get(j).equals("=")){
+                            for(int indPt = 0; indPt < puzzle.getConstraintList().get(j).getPoints().size(); indPt++){
+                                for(int totPts = 0; totPts < puzzle.getConstraintList().get(j).getPoints().size(); totPts++){
+                                    //check left
+                                    if(puzzle.getConstraintList().get(j).getPoints().get(indPt).getRow()==puzzle.getConstraintList().get(j).getPoints().get(totPts).getRow() &&
+                                            puzzle.getConstraintList().get(j).getPoints().get(indPt).getCol()-1 == puzzle.getConstraintList().get(j).getPoints().get(totPts).getCol())
+                                    {
+                                        g.fillRect(start_X+(puzzle.getConstraintList().get(j).getPoints().get(indPt).getCol()) * (cellSize + divWid),start_Y + (puzzle.getConstraintList().get(j).getPoints().get(indPt).getRow()) * (cellSize + divWid) + divWid, divWid - 2, cellSize);
+                                        //System.out.println("----------row1: + " + puzzle.getConstraintList().get(j).getPoints().get(indPt).getRow() + "    row2: " + puzzle.getConstraintList().get(j).getPoints().get(totPts).getRow() + "    col1: " +puzzle.getConstraintList().get(j).getPoints().get(indPt).getCol() + "    col2: " + puzzle.getConstraintList().get(j).getPoints().get(totPts).getCol());
+                                    }
+                                    //check right
+                                    if(puzzle.getConstraintList().get(j).getPoints().get(indPt).getRow()==puzzle.getConstraintList().get(j).getPoints().get(totPts).getRow() &&
+                                            puzzle.getConstraintList().get(j).getPoints().get(indPt).getCol()+1 == puzzle.getConstraintList().get(j).getPoints().get(totPts).getCol())
+                                    {
+
+                                        System.out.println("found a match" + " at indPt = " + indPt + " and totPts = " + totPts);
+                                        System.out.println("row1: " + puzzle.getConstraintList().get(j).getPoints().get(indPt).getRow() + " col1: " +puzzle.getConstraintList().get(j).getPoints().get(indPt).getCol()+ "    row2: " + puzzle.getConstraintList().get(j).getPoints().get(totPts).getRow() +" col2: " + puzzle.getConstraintList().get(j).getPoints().get(totPts).getCol()+"-----------\n");
+                                        g.fillRect(start_X+(puzzle.getConstraintList().get(j).getPoints().get(totPts).getCol()) * (cellSize + divWid),start_Y + (puzzle.getConstraintList().get(j).getPoints().get(indPt).getRow()) * (cellSize + divWid) + divWid, divWid - 2, cellSize);
+                                        //System.out.println("----------row1: + " + puzzle.getConstraintList().get(j).getPoints().get(indPt).getRow() + "    row2: " + puzzle.getConstraintList().get(j).getPoints().get(totPts).getRow() + "    col1: " +puzzle.getConstraintList().get(j).getPoints().get(indPt).getCol() + "    col2: " + puzzle.getConstraintList().get(j).getPoints().get(totPts).getCol());
+                                    }
+                                    //check up
+                                    if(puzzle.getConstraintList().get(j).getPoints().get(indPt).getRow()-1==puzzle.getConstraintList().get(j).getPoints().get(totPts).getRow() &&
+                                    puzzle.getConstraintList().get(j).getPoints().get(indPt).getCol() == puzzle.getConstraintList().get(j).getPoints().get(totPts).getCol())
+                                    {
+                                        g.fillRect(start_X+(puzzle.getConstraintList().get(j).getPoints().get(indPt).getCol()) * (cellSize + divWid) +divWid,start_Y + (puzzle.getConstraintList().get(j).getPoints().get(indPt).getRow()) * (cellSize + divWid) + divWid-divWid, cellSize, divWid-2);
+                                    }
+                                    //check down
+                                    if(puzzle.getConstraintList().get(j).getPoints().get(indPt).getRow()+1==puzzle.getConstraintList().get(j).getPoints().get(totPts).getRow() &&
+                                            puzzle.getConstraintList().get(j).getPoints().get(indPt).getCol() == puzzle.getConstraintList().get(j).getPoints().get(totPts).getCol())
+                                    {
+                                        g.fillRect(start_X+(puzzle.getConstraintList().get(j).getPoints().get(totPts).getCol()) * (cellSize + divWid) +divWid,start_Y + (puzzle.getConstraintList().get(j).getPoints().get(totPts).getRow()) * (cellSize + divWid) + divWid-divWid, cellSize, divWid-2);
+                                    }
+
+                                }
+
+                            }
+                        }
+                    }
+
+
+                    /*
                     for(int i = 0; i < puzzle.getConstraintList().size(); i++) {
                         if (!puzzle.getConstraintList().get(i).getArithSym().equals("!=")) {
                             if (puzzle.getConstraintList().get(i).getPoints().size() > 1) {
@@ -90,6 +133,7 @@ public class KenKenDisplay extends JPanel {
                             }
                         }
                     }
+                    */
 
                     //This will detect and display the assignment in the lower right of each box
                     g.setColor(Color.BLACK);
@@ -106,7 +150,7 @@ public class KenKenDisplay extends JPanel {
 //                                g.drawString("" + puzzle.getConstraintList().get(c).getPoints().get(p).getAssignment(), start_X +
 //                                                divWid + (cellSize + divWid) * puzzle.getConstraintList().get(p).getPoints().get(p).getCol() + offSet_Solution_X,
 //                                        start_Y + divWid + (cellSize + divWid) * puzzle.getConstraintList().get(p).getPoints().get(p).getRow() + offSet_Solution_Y);
-                                //System.out.println(puzzle.getConstraintList().get(c).getPoints().get(p).getAssignment());
+                            //System.out.println(puzzle.getConstraintList().get(c).getPoints().get(p).getAssignment());
                             //}
                         }
                     }
