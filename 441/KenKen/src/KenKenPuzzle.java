@@ -93,14 +93,14 @@ public class KenKenPuzzle {
         //printConstr(constraintList);
         for(int row = 0; row < variablesTotal.length; row++) {
             for(int col = 0; col < variablesTotal[row].length; col++) {
-                System.out.println("Variables total: " + variablesTotal[row][col].toString());
+                //System.out.println("Variables total: " + variablesTotal[row][col].toString());
             }
         }
         if (isNoded == false){
             nodeConsistency(constraintList);
             for(int row = 0; row < variablesTotal.length; row++) {
                 for (int col = 0; col < variablesTotal[row].length; col++) {
-                    System.out.println("Variables total: " + variablesTotal[row][col].toString());
+                    //System.out.println("Variables total: " + variablesTotal[row][col].toString());
                 }
             }
         }
@@ -116,7 +116,7 @@ public class KenKenPuzzle {
     public void nodeConsistency(ArrayList<Constraint> list){
         for(int i = 0; i < list.size(); i ++){
             if(list.get(i).getArithSym().equals("=")) {
-                System.out.println("inside the if loop");
+                //System.out.println("inside the if loop");
                 Variable curVar =  list.get(i).getPoints().get(0);
                 int val = list.get(i).getArithSol();
                 curVar.setAssignment(val);
@@ -185,20 +185,23 @@ public class KenKenPuzzle {
     public boolean revise(Constraint c1){
         boolean revised = false;
         switch (c1.getArithSym()){
-            case "+": reviseAddition(c1);
-                revised = true;
-                break;
+//            case "+": reviseAddition(c1);
+//                revised = true;
+//                break;
 //            case "-": reviseSubtraction(c1);
 //                revised = true;
 //                break;
-            case "*": reviseMultiplication(c1);
-                revised = true;
-                break;
+//            case "x": reviseMultiplication(c1);
+//                revised = true;
+//                break;
 //            case "/": reviseDivision(c1);
 //                revised = true;
 //                break;
             case "!=": reviseInequality(c1);
                 revised = true;
+                break;
+            default:
+                System.out.println("Default case performed  " + c1.getArithSym());
                 break;
         }
         return revised;
@@ -213,6 +216,7 @@ public class KenKenPuzzle {
         Variable var1 = c1.getVariable(0);
         Variable var2 = c1.getVariable(1);
         boolean revised = false;
+        ArrayList<Integer> toPurge = new ArrayList<>();
 
         //check if var1 is assigned
         if(var1.isAssigned()){
@@ -220,9 +224,14 @@ public class KenKenPuzzle {
             //if it is then remove its value from var2's domain
             for(int i = 0; i < var2.domain.size(); i ++){
                 if(var2.domain.get(i) == var1.getAssignment()){
-                    var2.domain.remove(i);
+                    toPurge.add(var1.domain.get(i));
+                    revised = true;
+                    continue;
                 }
             }
+        }
+        if (toPurge.size() > 0) {
+            var1.purgeValue(toPurge);
         }
 
         //check if var2 is assigned
@@ -231,11 +240,16 @@ public class KenKenPuzzle {
             //if it is then remove its value from var1's domain
             for(int i = 0; i < var1.domain.size(); i++){
                 if(var1.domain.get(i) == var1.getAssignment()){
-                    var2.domain.remove(i);
+                    toPurge.add(var1.domain.get(i));
+                    revised = true;
+                    continue;
                 }
             }
         }
 
+        if (toPurge.size() > 0) {
+            var1.purgeValue(toPurge);
+        }
         return revised;
     }
 
@@ -248,6 +262,7 @@ public class KenKenPuzzle {
         Variable var1 = c1.getVariable(0);
         Variable var2 = c1.getVariable(1);
         boolean revised = false;
+        ArrayList<Integer> toPurge = new ArrayList<>();
 
         //attempts to solve for >=2 arity by testing all of the possible combinations for the sum
         for(int i = 0; i < var1.domain.size(); i++){
@@ -257,9 +272,13 @@ public class KenKenPuzzle {
 
             //if the domain doesn't contain the needed value then remove it and set revise to true
             if(!var2.domainContains(neededValue)){
-                var1.domain.remove(i);
+                toPurge.add(var1.domain.get(i));
                 revised = true;
             }
+        }
+
+        if (toPurge.size() > 0) {
+            var1.purgeValue(toPurge);
         }
 
         //attempts to solve for >=2 arity by testing all of the possible combinations for the sum
@@ -270,9 +289,12 @@ public class KenKenPuzzle {
 
             //if the domain doesn't contain the needed value then remove it and set revise to true
             if(!var1.domainContains(neededValue)){
-                var2.domain.remove(i);
+                toPurge.add(var2.domain.get(i));
                 revised = true;
             }
+        }
+        if (toPurge.size() > 0) {
+            var1.purgeValue(toPurge);
         }
         return revised;
     }
@@ -282,38 +304,60 @@ public class KenKenPuzzle {
      * @param c1 - the Constraint
      * @return - true if it was revised
      */
-    public boolean reviseMultiplication(Constraint c1){
+    public boolean reviseMultiplication(Constraint c1) {
+        System.out.println("inside reviseMultiplication        " + c1.toString());
         Variable var1 = c1.getVariable(0);
         Variable var2 = c1.getVariable(1);
         boolean revised = false;
-
+        ArrayList<Integer> toPurge = new ArrayList<>();
         //attempts to solve for >=2 arity by testing all of the possible combinations for the product
-        for(int i = 0; i < var1.domain.size(); i++){
-
+        for (int i = 0; i < var1.domain.size(); i++) {
+            int neededValue = 0;
             //loop through the domain of the variable and test the domains against the needed value
-            int neededValue = c1.getArithSol()/var1.domain.get(i);
+            if (c1.getArithSol() % var1.domain.get(i) == 0) {
+                neededValue = c1.getArithSol() / var1.domain.get(i);
+            } else {
+                toPurge.add(var1.domain.get(i));
+                System.out.println("not factor, add to purge");
+                continue;
+            }
 
             //if the domain doesn't contain the needed value then remove it and set revise to true
-            if(!var2.domainContains(neededValue)){
-                var1.domain.remove(i);
+            if (!var2.domainContains(neededValue)) {
+                toPurge.add(var1.domain.get(i));
+                System.out.println("no memeber, add to purge");
                 revised = true;
             }
         }
 
-        //attempts to solve for >=2 arity by testing all of the possible combinations for the product
-        for(int i = 0; i < var2.domain.size(); i++){
+        if (toPurge.size() > 0) {
+            var1.purgeValue(toPurge);
+        }
 
+        for (int i = 0; i < var2.domain.size(); i++) {
+            int neededValue = 0;
             //loop through the domain of the variable and test the domains against the needed value
-            int neededValue = c1.getArithSol()/var2.domain.get(i);
+            if (c1.getArithSol() % var2.domain.get(i) == 0) {
+                neededValue = c1.getArithSol() / var2.domain.get(i);
+            } else {
+                toPurge.add(var2.domain.get(i));
+                continue;
+            }
 
             //if the domain doesn't contain the needed value then remove it and set revise to true
-            if(!var1.domainContains(neededValue)){
-                var2.domain.remove(i);
+            if (!var1.domainContains(neededValue)) {
+                toPurge.add(var2.domain.get(i));
                 revised = true;
             }
         }
+
+        if (toPurge.size() > 0) {
+            var2.purgeValue(toPurge);
+        }
+
         return revised;
     }
+
 
     /**
      * Revises the subtraction constraints
@@ -415,7 +459,7 @@ public class KenKenPuzzle {
 
     public void printConstr(ArrayList<Constraint> list){
         for(int i = 0; i < list.size(); i ++){
-            System.out.println(list.get(i).toString());
+            //System.out.println(list.get(i).toString());
         }
 
     }

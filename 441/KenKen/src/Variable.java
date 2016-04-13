@@ -130,5 +130,16 @@ public class Variable {
         isAssigned = assigned;
     }
 
+    public void purgeValue(ArrayList<Integer> purgeList){
+        for(int i = 0; i < purgeList.size(); i++){
+            for(int k = 0; k < domain.size(); k++){
+                if(purgeList.get(i) == domain.get(k)){
+                    domain.remove(k);
+                    break;
+                }
+            }
+        }
+    }
+
 
 }
