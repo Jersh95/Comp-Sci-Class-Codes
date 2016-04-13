@@ -105,7 +105,7 @@ public class KenKenPuzzle {
             }
         }
         else {
-            ac_3(constraintList);
+            arcConsistency(constraintList);
         }
     }
 
@@ -132,6 +132,8 @@ public class KenKenPuzzle {
     /**
      * Forms the inequality constraints and adds it to the total constraint list
      */
+
+    //this is only adding constraints horizontally and not vertically
     public void formInequality(){
         for(int row = 0; row < numRows; row++){
             for(int var = 0; var < numRows; var++){
@@ -154,7 +156,7 @@ public class KenKenPuzzle {
      * This will perform the arc consistency for the puzzle
      * @param list - the list containing all of the constraints
      */
-    public boolean ac_3(ArrayList<Constraint> list){
+    public boolean arcConsistency(ArrayList<Constraint> list){
         System.out.println("Arc Consistency Attempted");
         Stack queue = new Stack();
         boolean revised = false;
@@ -165,28 +167,11 @@ public class KenKenPuzzle {
             }
         }
 
-        /*
-        * run the revise method and pass the top constraint as the parameter
-        * if it returns true, loop through the list and find the variables that match the constraint that was passed
-        * and add that constraint to the queue again
-        */
-
-
         while (queue.size()>0){
             Constraint topConstr = (Constraint) queue.pop();
             //System.out.println("Top Constr: " + topConstr.getPoints());
             if(revise(topConstr)){
                 revised = true;
-//                for(int i = 0; i < list.size(); i++){
-//                    if(list.get(i).getPoints() == topConstr.getPoints()){
-//                        queue.push(list.get(i));
-//                        System.out.println("\n----------------------\ni: " + i);
-//                        for(int j = 0; j < list.get(i).getPoints().size(); j++) {
-//                            System.out.println("Points: " + list.get(i).getPoints());
-//                            System.out.println("Domain: " +list.get(i).getPoints().get(j).getDomain());
-//                        }
-//                    }
-//                }
             }
         }
         return true;
@@ -206,15 +191,15 @@ public class KenKenPuzzle {
 //            case "-": reviseSubtraction(c1);
 //                revised = true;
 //                break;
-//            case "*": reviseMultiplication(c1);
-//                revised = true;
-//                break;
+            case "*": reviseMultiplication(c1);
+                revised = true;
+                break;
 //            case "/": reviseDivision(c1);
 //                revised = true;
 //                break;
-//            case "!=": reviseInequality(c1);
-//                revised = true;
-//                break;
+            case "!=": reviseInequality(c1);
+                revised = true;
+                break;
         }
         return revised;
     }
@@ -229,6 +214,28 @@ public class KenKenPuzzle {
         Variable var2 = c1.getVariable(1);
         boolean revised = false;
 
+        //check if var1 is assigned
+        if(var1.isAssigned()){
+
+            //if it is then remove its value from var2's domain
+            for(int i = 0; i < var2.domain.size(); i ++){
+                if(var2.domain.get(i) == var1.getAssignment()){
+                    var2.domain.remove(i);
+                }
+            }
+        }
+
+        //check if var2 is assigned
+        if(var2.isAssigned()){
+
+            //if it is then remove its value from var1's domain
+            for(int i = 0; i < var1.domain.size(); i++){
+                if(var1.domain.get(i) == var1.getAssignment()){
+                    var2.domain.remove(i);
+                }
+            }
+        }
+
         return revised;
     }
 
@@ -241,15 +248,27 @@ public class KenKenPuzzle {
         Variable var1 = c1.getVariable(0);
         Variable var2 = c1.getVariable(1);
         boolean revised = false;
+
+        //attempts to solve for >=2 arity by testing all of the possible combinations for the sum
         for(int i = 0; i < var1.domain.size(); i++){
+
+            //loop through the domain of the variable and test the domains against the needed value
             int neededValue = c1.getArithSol()-var1.domain.get(i);
+
+            //if the domain doesn't contain the needed value then remove it and set revise to true
             if(!var2.domainContains(neededValue)){
                 var1.domain.remove(i);
                 revised = true;
             }
         }
+
+        //attempts to solve for >=2 arity by testing all of the possible combinations for the sum
         for(int i = 0; i < var2.domain.size(); i++){
+
+            //loop through the domain of the variable and test the domains against the needed value
             int neededValue = c1.getArithSol()-var2.domain.get(i);
+
+            //if the domain doesn't contain the needed value then remove it and set revise to true
             if(!var1.domainContains(neededValue)){
                 var2.domain.remove(i);
                 revised = true;
@@ -267,15 +286,27 @@ public class KenKenPuzzle {
         Variable var1 = c1.getVariable(0);
         Variable var2 = c1.getVariable(1);
         boolean revised = false;
+
+        //attempts to solve for >=2 arity by testing all of the possible combinations for the product
         for(int i = 0; i < var1.domain.size(); i++){
+
+            //loop through the domain of the variable and test the domains against the needed value
             int neededValue = c1.getArithSol()/var1.domain.get(i);
+
+            //if the domain doesn't contain the needed value then remove it and set revise to true
             if(!var2.domainContains(neededValue)){
                 var1.domain.remove(i);
                 revised = true;
             }
         }
+
+        //attempts to solve for >=2 arity by testing all of the possible combinations for the product
         for(int i = 0; i < var2.domain.size(); i++){
+
+            //loop through the domain of the variable and test the domains against the needed value
             int neededValue = c1.getArithSol()/var2.domain.get(i);
+
+            //if the domain doesn't contain the needed value then remove it and set revise to true
             if(!var1.domainContains(neededValue)){
                 var2.domain.remove(i);
                 revised = true;
