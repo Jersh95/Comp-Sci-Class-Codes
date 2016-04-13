@@ -146,6 +146,7 @@ public class KenKenPuzzle {
                         conVars.add(var2);
                         Constraint constr = new Constraint(conVars, 0, "!=");
                         constraintList.add(constr);
+                        System.out.println("Inequality Constr: " + var1.getRow()+"," + var1.getCol() + "    " + var2.getRow()+","+var2.getCol());
                     }
                 }
             }
@@ -215,16 +216,16 @@ public class KenKenPuzzle {
     public boolean reviseInequality(Constraint c1){
         Variable var1 = c1.getVariable(0);
         Variable var2 = c1.getVariable(1);
+        //System.out.println("var1 domain size: " + var1.domain.size() + "    var1 points: " + var1.getRow()+ "," + var1.getCol());
+        //System.out.println("var2 domain size: " + var2.domain.size() + "    var2 points: " + var2.getRow()+ "," + var2.getCol());
         boolean revised = false;
         ArrayList<Integer> toPurge = new ArrayList<>();
-
         //check if var1 is assigned
         if(var1.isAssigned()){
-
             //if it is then remove its value from var2's domain
             for(int i = 0; i < var2.domain.size(); i ++){
                 if(var2.domain.get(i) == var1.getAssignment()){
-                    toPurge.add(var1.domain.get(i));
+                    toPurge.add(var2.domain.get(i));
                     revised = true;
                     continue;
                 }
@@ -233,20 +234,17 @@ public class KenKenPuzzle {
         if (toPurge.size() > 0) {
             var1.purgeValue(toPurge);
         }
-
         //check if var2 is assigned
         if(var2.isAssigned()){
-
             //if it is then remove its value from var1's domain
             for(int i = 0; i < var1.domain.size(); i++){
-                if(var1.domain.get(i) == var1.getAssignment()){
+                if(var1.domain.get(i) == var2.getAssignment()){
                     toPurge.add(var1.domain.get(i));
                     revised = true;
                     continue;
                 }
             }
         }
-
         if (toPurge.size() > 0) {
             var1.purgeValue(toPurge);
         }
