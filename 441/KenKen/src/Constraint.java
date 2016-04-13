@@ -63,4 +63,8 @@ public class Constraint {
         result+=(" Solution: " + arithSol);
         return result;
     }
+
+    public int getArity(){
+        return variables.size();
+    }
 }

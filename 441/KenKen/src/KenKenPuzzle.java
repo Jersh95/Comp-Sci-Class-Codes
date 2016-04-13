@@ -105,7 +105,7 @@ public class KenKenPuzzle {
             }
         }
         else {
-            arcConsistency(constraintList);
+            ac_3(constraintList);
         }
     }
 
@@ -154,13 +154,15 @@ public class KenKenPuzzle {
      * This will perform the arc consistency for the puzzle
      * @param list - the list containing all of the constraints
      */
-    public boolean arcConsistency(ArrayList<Constraint> list){
+    public boolean ac_3(ArrayList<Constraint> list){
         System.out.println("Arc Consistency Attempted");
         Stack queue = new Stack();
         boolean revised = false;
         String constrType = "";
-        for(int i = 0; i < list.size(); i++){
-            queue.push(list.get(i));
+        for(int i = 0; i < list.size(); i++) {
+            if (list.get(i).getArity() == 2) {
+                queue.push(list.get(i));
+            }
         }
 
         /*
@@ -168,20 +170,23 @@ public class KenKenPuzzle {
         * if it returns true, loop through the list and find the variables that match the constraint that was passed
         * and add that constraint to the queue again
         */
+
+
         while (queue.size()>0){
             Constraint topConstr = (Constraint) queue.pop();
             //System.out.println("Top Constr: " + topConstr.getPoints());
-            if(revise(topConstr) == true){
-                for(int i = 0; i < list.size(); i++){
-                    if(list.get(i).getPoints() == topConstr.getPoints()){
-                        queue.push(list.get(i));
-                        //System.out.println("\n----------------------\ni: " + i);
-                        for(int j = 0; j < list.get(i).getPoints().size(); j++) {
-                            //System.out.println("Points: " + list.get(i).getPoints());
-                            //System.out.println("Domain: " +list.get(i).getPoints().get(j).getDomain());
-                        }
-                    }
-                }
+            if(revise(topConstr)){
+                revised = true;
+//                for(int i = 0; i < list.size(); i++){
+//                    if(list.get(i).getPoints() == topConstr.getPoints()){
+//                        queue.push(list.get(i));
+//                        System.out.println("\n----------------------\ni: " + i);
+//                        for(int j = 0; j < list.get(i).getPoints().size(); j++) {
+//                            System.out.println("Points: " + list.get(i).getPoints());
+//                            System.out.println("Domain: " +list.get(i).getPoints().get(j).getDomain());
+//                        }
+//                    }
+//                }
             }
         }
         return true;
@@ -198,18 +203,18 @@ public class KenKenPuzzle {
             case "+": reviseAddition(c1);
                 revised = true;
                 break;
-            case "-": reviseSubtraction(c1);
-                revised = true;
-                break;
-            case "*": reviseMultiplication(c1);
-                revised = true;
-                break;
-            case "/": reviseDivision(c1);
-                revised = true;
-                break;
-            case "!=": reviseInequality(c1);
-                revised = true;
-                break;
+//            case "-": reviseSubtraction(c1);
+//                revised = true;
+//                break;
+//            case "*": reviseMultiplication(c1);
+//                revised = true;
+//                break;
+//            case "/": reviseDivision(c1);
+//                revised = true;
+//                break;
+//            case "!=": reviseInequality(c1);
+//                revised = true;
+//                break;
         }
         return revised;
     }
@@ -392,4 +397,7 @@ public class KenKenPuzzle {
         return variablesTotal[row][col].getAssignment();
     }
 
+    public String getDomainAt(int row, int col){
+        return variablesTotal[row][col].domainToString();
+    }
 }

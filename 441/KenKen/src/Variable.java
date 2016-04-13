@@ -36,6 +36,16 @@ public class Variable {
         return info;
     }
 
+    public String domainToString(){
+        String domString = "";
+        for(int i = 0; i < domain.size(); i++){
+            domString+=domain.get(i) + " ";
+        }
+
+
+        return domString;
+    }
+
     public boolean domainContains(int neededValue){
         for(int i = 0; i < domain.size(); i++){
             if(domain.get(i) == neededValue){

@@ -119,6 +119,14 @@ public class KenKenDisplay extends JPanel {
                         }
                     }
 
+                    g.setColor(Color.RED);
+                    g.setFont(smallFont);
+                    for(int r = 0; r<puzzle.getNumRows(); r++){
+                        for(int c = 0; c<puzzle.getNumRows(); c++){
+                            g.drawString(puzzle.getDomainAt(r,c), start_X+divWid+(cellSize+divWid)*c +5, start_Y+divWid + (cellSize+divWid)*r + 45);
+                        }
+                    }
+
                     //This will detect and display the constraint solution and symbol in the top left of the first box in the constraint list
                     g.setColor(Color.BLACK);
                     g.setFont(smallFont);
