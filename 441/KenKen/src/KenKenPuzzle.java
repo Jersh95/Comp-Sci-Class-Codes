@@ -150,6 +150,22 @@ public class KenKenPuzzle {
                 }
             }
         }
+
+        for(int col = 0; col < numRows; col++){
+            for(int var = 0; var < numRows; var++){
+                for(int row = 0; row < numRows; row++){
+                    if(var != col) {
+                        Variable var1 = variablesTotal[var][col];
+                        Variable var2 = variablesTotal[row][col];
+                        ArrayList<Variable> conVars = new ArrayList<Variable>();
+                        conVars.add(var1);
+                        conVars.add(var2);
+                        Constraint constr = new Constraint(conVars, 0, "!=");
+                        constraintList.add(constr);
+                    }
+                }
+            }
+        }
     }
 
     /**
