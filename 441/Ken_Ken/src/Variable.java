@@ -141,5 +141,25 @@ public class Variable {
         }
     }
 
+    public void removeDomValue(int value){
+        for(int i = 0; i < domain.size(); i++){
+            if(domain.get(i) == value){
+                domain.remove(i);
+            }
+        }
+    }
+
+    public void checkForSingleton(){
+        //boolean isSingleton = false;
+        if(domain.size() == 1){
+            setAssigned(true);
+            setAssignment(domain.get(0));
+            setSingleton(domain.get(0));
+
+            //isSingleton = true;
+        }
+        //return isSingleton;
+    }
+
 
 }
