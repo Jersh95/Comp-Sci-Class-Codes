@@ -202,15 +202,15 @@ public class KenKenPuzzle {
     public boolean revise(Constraint c1){
         boolean revised = false;
         switch (c1.getArithSym()){
-//            case "+": reviseAddition(c1);
-//                revised = true;
-//                break;
+            case "+": reviseAddition(c1);
+                revised = true;
+                break;
             case "-": reviseSubtraction(c1);
                 revised = true;
                 break;
-//            case "x": reviseMultiplication(c1);
-//                revised = true;
-//                break;
+            case "x": reviseMultiplication(c1);
+                revised = true;
+                break;
 //            case "/": reviseDivision(c1);
 //                revised = true;
 //                break;
@@ -235,19 +235,23 @@ public class KenKenPuzzle {
         boolean revised = false;
         ArrayList<Integer> toPurge = new ArrayList<>();
         //check if var1 is assigned
-        if(var1.isAssigned()){
+        if(var1.isAssigned()) {
             //if it is then remove its value from var2's domain
-            var2.removeDomValue(var1.getAssignment());
-            revised = true;
-            var2.checkForSingleton();
+            revised = var2.removeDomValue(var1.getAssignment());
+            if (revised) {
+                var2.checkForSingleton();
+                System.out.println("inequality purge  row_col " + var2.getRow()+","+var2.getCol() + "    " + var1.getAssignment()+ "   domain: " + var1.getDomain());
+            }
         }
 
         //check if var2 is assigned
         if(var2.isAssigned()){
             //if it is then remove its value from var1's domain
-            var1.removeDomValue(var2.getAssignment());
-            revised = true;
-            var1.checkForSingleton();
+            revised = var1.removeDomValue(var2.getAssignment());
+            if(revised){
+                var1.checkForSingleton();
+                System.out.println("inequality purge  row_col " + var1.getRow()+","+var1.getCol() + "      " + var2.getAssignment()+ "   domain: " + var2.getDomain() );
+            }
         }
         return revised;
     }
@@ -371,14 +375,16 @@ public class KenKenPuzzle {
             int neededValue1 = c1.getArithSol()+var1.domain.get(i);
             System.out.println("var1  neededValue1: " + c1.getArithSol() + " + " + var1.domain.get(i) + " = " + neededValue1);
             int neededValue2 = var1.domain.get(i)-c1.getArithSol();
-            System.out.println("var1  neededValue2: " + var1.domain.get(i) + " - " + c1.getArithSol() + " = " + neededValue2);
+            System.out.println("var1 domain.get(i) "  + var1.domain.get(i) + " c1.getArithSol() " + c1.getArithSol());
+            System.out.println("var1  neededValue2: "  + neededValue2);
             if(var2.domain.contains(neededValue1) || var2.domain.contains(neededValue2)){
                 System.out.println("value " + neededValue1 + " or " + neededValue2 + " spared");
             }
             else{
-                System.out.println("var2 domain: " + var2.domain.toString());
+                System.out.println("var1 row_col " + var1.getRow() + "," + var1.getCol() + "   var1 domain: " + var1.domain.toString());
+                System.out.println("var2 row_col " + var2.getRow() + "," + var2.getCol() + "   var2 domain: " + var2.domain.toString());
                 toPurge.add(var1.domain.get(i));
-                System.out.println("toPurge value added: " + var1.domain.get(i));
+                System.out.println("Subtraction 11toPurge value added: " + var1.domain.get(i) + "   neededValue1 " + neededValue1 + "  neededValue2   " + neededValue2 + "\n");
                 revised = true;
             }
         }
@@ -386,25 +392,28 @@ public class KenKenPuzzle {
             var1.purgeValue(toPurge);
             var1.checkForSingleton();
         }
-
+        toPurge = new ArrayList<>();
         for(int i = 0; i < var2.domain.size(); i++){
             int neededValue1 = c1.getArithSol()+var2.domain.get(i);
             System.out.println("var2  neededValue1: " + c1.getArithSol() + " + " + var2.domain.get(i) + " = " + neededValue1);
             int neededValue2 = var2.domain.get(i)-c1.getArithSol();
+            System.out.println("var1 domain.get(i) "  + var2.domain.get(i) + " c1.getArithSol() " + c1.getArithSol());
             System.out.println("var2  neededValue2: " + var2.domain.get(i) + " - " + c1.getArithSol() + " = " + neededValue2);
             if(var1.domain.contains(neededValue1) || var1.domain.contains(neededValue2)){
                 System.out.println("value " + neededValue1 + " or " + neededValue2 + " spared");
             }
             else{
-                System.out.println("var1 domain: " + var1.domain.toString());
+                System.out.println("var1 row_ col " + var1.getRow() + "," + var1.getCol() + "     var1 domain: " + var1.domain.toString());
+                System.out.println("var2 row_col " + var2.getRow() + "," + var2.getCol() + "   var2 domain: " + var2.domain.toString());
                 toPurge.add(var2.domain.get(i));
-                System.out.println("toPurge value added: " + var2.domain.get(i));
+                System.out.println("Subtraction 22 toPurge value added: " + var2.domain.get(i) + "   neededValue1 " + neededValue1 + "  neededValue2    " + neededValue2 + "\n");
                 revised = true;
             }
         }
         if(toPurge.size()>0){
             var2.purgeValue(toPurge);
             var2.checkForSingleton();
+            System.out.println("var2 after purge row/col " + var2.getRow() + "," + var2.getCol() + "    domain:   " + var2.getDomain());
         }
 
         return revised;

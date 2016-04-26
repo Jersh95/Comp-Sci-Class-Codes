@@ -141,12 +141,14 @@ public class Variable {
         }
     }
 
-    public void removeDomValue(int value){
+    public boolean removeDomValue(int value){
         for(int i = 0; i < domain.size(); i++){
             if(domain.get(i) == value){
                 domain.remove(i);
+                return true;
             }
         }
+        return false;
     }
 
     public void checkForSingleton(){
