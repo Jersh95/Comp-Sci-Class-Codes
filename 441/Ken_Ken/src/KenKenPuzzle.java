@@ -211,9 +211,9 @@ public class KenKenPuzzle {
             case "x": reviseMultiplication(c1);
                 revised = true;
                 break;
-//            case "/": reviseDivision(c1);
-//                revised = true;
-//                break;
+            case "/": reviseDivision(c1);
+                revised = true;
+                break;
             case "!=": reviseInequality(c1);
                 revised = true;
                 break;
@@ -281,6 +281,9 @@ public class KenKenPuzzle {
             var2.purgeValue(toPurge);
             var2.checkForSingleton();
         }
+
+        toPurge = new ArrayList<>();
+
         //attempts to solve for >=2 arity by testing all of the possible combinations for the sum
         for(int i = 0; i < var2.domain.size(); i++){
             //loop through the domain of the variable and test the domains against the needed value
@@ -333,6 +336,8 @@ public class KenKenPuzzle {
             var1.purgeValue(toPurge);
             var1.checkForSingleton();
         }
+
+        toPurge = new ArrayList<>();
 
         for (int i = 0; i < var2.domain.size(); i++) {
             int neededValue = 0;
@@ -428,31 +433,82 @@ public class KenKenPuzzle {
         Variable var1 = c1.getVariable(0);
         Variable var2 = c1.getVariable(1);
         boolean revised = false;
-        for(int i = 0; i < var1.domain.size(); i++){
-            int neededValue1 = c1.getArithSol()*var1.domain.get(i);
-            int neededValue2 = c1.getArithSol()*var2.domain.get(i);
-            if(!var2.domainContains(neededValue1)){
-                var1.domain.remove(i);
-                revised = true;
-            }
-            if(!var2.domainContains(neededValue2)){
-                var1.domain.remove(i);
-                revised = true;
-            }
-        }
+        ArrayList<Integer> toPurge = new ArrayList<>();
+        int neededValue1 = 0;
+        int neededValue2 = 0;
 
         for(int i = 0; i < var1.domain.size(); i++){
-            int neededValue1 = c1.getArithSol()*var1.domain.get(i);
-            int neededValue2 = c1.getArithSol()*var2.domain.get(i);
-            if(!var1.domainContains(neededValue1)){
-                var1.domain.remove(i);
-                revised = true;
+            System.out.println("------------------------------------------");
+            System.out.println("c1.getArithSol() % var1.domain.get(i) == 0    " + c1.getArithSol() % var1.domain.get(i));
+            neededValue1 = c1.getArithSol() * var1.domain.get(i);
+            System.out.println("var1  neededValue1: "  + neededValue1);
+
+
+            System.out.println("var1  neededValue1: " + c1.getArithSol() + " / " + var1.domain.get(i) + " = " + neededValue1);
+
+            if(var1.domain.get(i) % c1.getArithSol() == 0) {
+                System.out.println("var1.domain.get(i) % c1.getArithSol() == 0     " + var1.domain.get(i) % c1.getArithSol());
+                neededValue2 = var1.domain.get(i) / c1.getArithSol();
+                System.out.println("var1  neededValue2: "  + neededValue2);
             }
-            if(!var1.domainContains(neededValue2)){
-                var2.domain.remove(i);
+
+            System.out.println("var1  neededValue2: " + var1.domain.get(i) + " / " +  + c1.getArithSol()+ " = " + neededValue1);
+
+            System.out.println("var1 domain.get(i) "  + var1.domain.get(i) + " c1.getArithSol() " + c1.getArithSol());
+
+            if(var2.domain.contains(neededValue1) || var2.domain.contains(neededValue2)){
+                System.out.println("value " + neededValue1 + " or " + neededValue2 + " spared");
+            }
+            else{
+                System.out.println("var1 row_col " + var1.getRow() + "," + var1.getCol() + "   var1 domain: " + var1.domain.toString());
+                System.out.println("var2 row_col " + var2.getRow() + "," + var2.getCol() + "   var2 domain: " + var2.domain.toString());
+                toPurge.add(var1.domain.get(i));
+                System.out.println("Subtraction 11toPurge value added: " + var1.domain.get(i) + "   neededValue1 " + neededValue1 + "  neededValue2   " + neededValue2 + "\n");
                 revised = true;
             }
         }
+        if(toPurge.size()>0){
+            var1.purgeValue(toPurge);
+            var1.checkForSingleton();
+        }
+        toPurge = new ArrayList<>();
+
+        for(int i = 0; i < var2.domain.size(); i++){
+
+            System.out.println("c1.getArithSol() % var2.domain.get(i) == 0      " + c1.getArithSol() % var2.domain.get(i));
+            neededValue1 = c1.getArithSol() * var2.domain.get(i);
+            System.out.println("var2  neededValue1: "  + neededValue1);
+
+
+            System.out.println("var1  neededValue1: " + c1.getArithSol() + " / " + var2.domain.get(i) + " = " + neededValue1);
+
+            if(var2.domain.get(i) % c1.getArithSol() == 0) {
+                System.out.println("var2.domain.get(i) % c1.getArithSol() == 0      " + var2.domain.get(i) % c1.getArithSol());
+                neededValue2 = var2.domain.get(i) / c1.getArithSol();
+                System.out.println("var2  neededValue2: "  + neededValue2);
+            }
+
+
+           System.out.println("var1  neededValue2: " + var2.domain.get(i) + " / " +  + c1.getArithSol()+ " = " + neededValue1);
+
+            System.out.println("var1 domain.get(i) "  + var1.domain.get(i) + " c1.getArithSol() " + c1.getArithSol());
+
+            if(var1.domain.contains(neededValue1) || var1.domain.contains(neededValue2)){
+                System.out.println("value " + neededValue1 + " or " + neededValue2 + " spared");
+            }
+            else{
+                System.out.println("var1 row_col " + var2.getRow() + "," + var2.getCol() + "   var1 domain: " + var2.domain.toString());
+                System.out.println("var2 row_col " + var1.getRow() + "," + var1.getCol() + "   var2 domain: " + var1.domain.toString());
+                toPurge.add(var2.domain.get(i));
+                System.out.println("Subtraction 11toPurge value added: " + var2.domain.get(i) + "   neededValue1 " + neededValue1 + "  neededValue2   " + neededValue2 + "\n");
+                revised = true;
+            }
+        }
+        if(toPurge.size()>0){
+            var2.purgeValue(toPurge);
+            var2.checkForSingleton();
+        }
+
         return revised;
     }
 
