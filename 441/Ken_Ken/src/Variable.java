@@ -26,6 +26,10 @@ public class Variable {
         initDomain(size);
     }
 
+    /**
+     * Prints the Variable information in a string
+     * @return - the string
+     */
     public String toString(){
         String info = row+ "," +  col + "   (";
         for(int i = 0; i < domain.size(); i++){
@@ -36,16 +40,23 @@ public class Variable {
         return info;
     }
 
+    /**
+     * Prints the domain information in a string
+     * @return - the string
+     */
     public String domainToString(){
         String domString = "";
         for(int i = 0; i < domain.size(); i++){
             domString+=domain.get(i) + " ";
         }
-
-
         return domString;
     }
 
+    /**
+     * Checks if the domain contains a specific value
+     * @param neededValue - the value to check
+     * @return - if the domain contains the value or not
+     */
     public boolean domainContains(int neededValue){
         for(int i = 0; i < domain.size(); i++){
             if(domain.get(i) == neededValue){
@@ -130,6 +141,10 @@ public class Variable {
         isAssigned = assigned;
     }
 
+    /**
+     * Removes values contained in a list from the domain
+     * @param purgeList - the list containing all the values to be removed from the domain
+     */
     public void purgeValue(ArrayList<Integer> purgeList){
         for(int i = 0; i < purgeList.size(); i++){
             for(int k = 0; k < domain.size(); k++){
@@ -141,6 +156,11 @@ public class Variable {
         }
     }
 
+    /**
+     * Removes a specific value from the domain
+     * @param value - the value to remove
+     * @return - if the value has been removed or not
+     */
     public boolean removeDomValue(int value){
         for(int i = 0; i < domain.size(); i++){
             if(domain.get(i) == value){
@@ -151,17 +171,15 @@ public class Variable {
         return false;
     }
 
+    /**
+     * Checks if the cell only has one value left in the domain and assigns the cell to that value
+     */
     public void checkForSingleton(){
-        //boolean isSingleton = false;
         if(domain.size() == 1){
             setAssigned(true);
             setAssignment(domain.get(0));
             setSingleton(domain.get(0));
 
-            //isSingleton = true;
         }
-        //return isSingleton;
     }
-
-
 }

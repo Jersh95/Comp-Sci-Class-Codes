@@ -48,22 +48,33 @@ public class Constraint {
         return variables;
     }
 
+    /**
+     * Gets the variable of a specific index
+     * @param index - the requested variable index
+     * @return - the variable
+     */
     public Variable getVariable(int index){
         return variables.get(index);
     }
 
+    /**
+     * Prints the constraint object information in a string
+     * @return - the string
+     */
     public String toString(){
         String result = "variables length: " + variables.size();
-        //result+=("--------------\nVariables: " + variables);
         for(int i = 0; i < variables.size(); i ++){
             result += " " + variables.get(i).row + variables.get(i).col+",";
-            //result +=("Variable " + i + " domain: " + variables.get(i).getDomain());
         }
         result+=(" Symbol: " + arithSym);
         result+=(" Solution: " + arithSol);
         return result;
     }
 
+    /**
+     * Gets the arity of the variable
+     * @return - the arity size
+     */
     public int getArity(){
         return variables.size();
     }

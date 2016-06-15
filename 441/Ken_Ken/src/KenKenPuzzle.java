@@ -84,17 +84,18 @@ public class KenKenPuzzle {
      * This will generate the next arc constency step once the user clicks the screen
      */
     public void generateMove() {
-        //printConstr(constraintList);
+
+        //If node consistency hasn't been run yet, run it
         for(int row = 0; row < variablesTotal.length; row++) {
             for(int col = 0; col < variablesTotal[row].length; col++) {
-                //System.out.println("Variables total: " + variablesTotal[row][col].toString());
             }
         }
+
+        //Run arc consistency only after node consistency has been run once first
         if (isNoded == false){
             nodeConsistency(constraintList);
             for(int row = 0; row < variablesTotal.length; row++) {
                 for (int col = 0; col < variablesTotal[row].length; col++) {
-                    //System.out.println("Variables total: " + variablesTotal[row][col].toString());
                 }
             }
         }
@@ -110,13 +111,11 @@ public class KenKenPuzzle {
     public void nodeConsistency(ArrayList<Constraint> list){
         for(int i = 0; i < list.size(); i ++){
             if(list.get(i).getArithSym().equals("=")) {
-                //System.out.println("inside the if loop");
                 Variable curVar =  list.get(i).getPoints().get(0);
                 int val = list.get(i).getArithSol();
                 curVar.setAssignment(val);
                 curVar.setAssigned(true);
                 curVar.setSingleton(val);
-
             }
         }
         isNoded = true;
@@ -125,8 +124,6 @@ public class KenKenPuzzle {
     /**
      * Forms the inequality constraints and adds it to the total constraint list
      */
-
-    //this is only adding constraints horizontally and not vertically
     public void formInequality(){
         for(int row = 0; row < numRows; row++){
             for(int var = 0; var < numRows; var++){
@@ -169,15 +166,17 @@ public class KenKenPuzzle {
         Stack queue = new Stack();
         boolean revised = false;
         String constrType = "";
+
+        //Add all constraints to the queue
         for(int i = 0; i < list.size(); i++) {
             if (list.get(i).getArity() == 2) {
                 queue.push(list.get(i));
             }
         }
 
+        //Pop the top constraint off in order to evaluate it
         while (queue.size()>0){
             Constraint topConstr = (Constraint) queue.pop();
-            //System.out.println("Top Constr: " + topConstr.getPoints());
             if(revise(topConstr)){
                 revised = true;
             }
@@ -224,8 +223,10 @@ public class KenKenPuzzle {
         Variable var2 = c1.getVariable(1);
         boolean revised = false;
         ArrayList<Integer> toPurge = new ArrayList<>();
+
         //check if var1 is assigned
         if(var1.isAssigned()) {
+
             //if it is then remove its value from var2's domain
             revised = var2.removeDomValue(var1.getAssignment());
             if (revised) {
@@ -255,16 +256,19 @@ public class KenKenPuzzle {
         boolean revised = false;
         ArrayList<Integer> toPurge = new ArrayList<>();
 
-        //attempts to solve for >=2 arity by testing all of the possible combinations for the sum
         for(int i = 0; i < var1.domain.size(); i++){
+
             //loop through the domain of the variable and test the domains against the needed value
             int neededValue = c1.getArithSol()-var1.domain.get(i);
+
             //if the domain doesn't contain the needed value then remove it and set revise to true
             if(!var2.domainContains(neededValue)){
                 toPurge.add(var1.domain.get(i));
                 revised = true;
             }
         }
+
+        //Purge the bad domain values
         if (toPurge.size() > 0) {
             var2.purgeValue(toPurge);
             var2.checkForSingleton();
@@ -272,16 +276,19 @@ public class KenKenPuzzle {
 
         toPurge = new ArrayList<>();
 
-        //attempts to solve for >=2 arity by testing all of the possible combinations for the sum
         for(int i = 0; i < var2.domain.size(); i++){
+
             //loop through the domain of the variable and test the domains against the needed value
             int neededValue = c1.getArithSol()-var2.domain.get(i);
+
             //if the domain doesn't contain the needed value then remove it and set revise to true
             if(!var1.domainContains(neededValue)){
                 toPurge.add(var2.domain.get(i));
                 revised = true;
             }
         }
+
+        //Purge the bad domain values
         if (toPurge.size() > 0) {
             var1.purgeValue(toPurge);
             var1.checkForSingleton();
@@ -299,9 +306,10 @@ public class KenKenPuzzle {
         Variable var2 = c1.getVariable(1);
         boolean revised = false;
         ArrayList<Integer> toPurge = new ArrayList<>();
-        //attempts to solve for >=2 arity by testing all of the possible combinations for the product
+
         for (int i = 0; i < var1.domain.size(); i++) {
             int neededValue = 0;
+
             //loop through the domain of the variable and test the domains against the needed value
             if (c1.getArithSol() % var1.domain.get(i) == 0) {
                 neededValue = c1.getArithSol() / var1.domain.get(i);
@@ -317,6 +325,7 @@ public class KenKenPuzzle {
             }
         }
 
+        //Purge the bad domain values
         if (toPurge.size() > 0) {
             var1.purgeValue(toPurge);
             var1.checkForSingleton();
@@ -326,6 +335,7 @@ public class KenKenPuzzle {
 
         for (int i = 0; i < var2.domain.size(); i++) {
             int neededValue = 0;
+
             //loop through the domain of the variable and test the domains against the needed value
             if (c1.getArithSol() % var2.domain.get(i) == 0) {
                 neededValue = c1.getArithSol() / var2.domain.get(i);
@@ -341,6 +351,7 @@ public class KenKenPuzzle {
             }
         }
 
+        //Purge the bad domain values
         if (toPurge.size() > 0) {
             var2.purgeValue(toPurge);
             var2.checkForSingleton();
@@ -361,6 +372,7 @@ public class KenKenPuzzle {
         boolean revised = false;
         ArrayList<Integer> toPurge = new ArrayList<>();
 
+        //loop through the domain of the variable and test the domains against the needed value
         for(int i = 0; i < var1.domain.size(); i++){
             int neededValue1 = c1.getArithSol()+var1.domain.get(i);
             int neededValue2 = var1.domain.get(i)-c1.getArithSol();
@@ -371,11 +383,15 @@ public class KenKenPuzzle {
                 revised = true;
             }
         }
+
+        //Purge the bad domain values
         if(toPurge.size()>0){
             var1.purgeValue(toPurge);
             var1.checkForSingleton();
         }
         toPurge = new ArrayList<>();
+
+        //loop through the domain of the variable and test the domains against the needed value
         for(int i = 0; i < var2.domain.size(); i++){
             int neededValue1 = c1.getArithSol()+var2.domain.get(i);
             int neededValue2 = var2.domain.get(i)-c1.getArithSol();
@@ -386,6 +402,8 @@ public class KenKenPuzzle {
                 revised = true;
             }
         }
+
+        //Purge the bad domain values
         if(toPurge.size()>0){
             var2.purgeValue(toPurge);
             var2.checkForSingleton();
@@ -407,30 +425,26 @@ public class KenKenPuzzle {
         int neededValue1 = 0;
         int neededValue2 = 0;
 
+        //loop through the domain of the variable and test the domains against the needed value
         for(int i = 0; i < var1.domain.size(); i++){
             neededValue1 = c1.getArithSol() * var1.domain.get(i);
-
-
             neededValue2 = var1.domain.get(i) / c1.getArithSol();
-
-
 
             if(!var2.domain.contains(neededValue1) && !(var1.domain.get(i) % c1.getArithSol() == 0 && var2.domain.contains(neededValue2))){
                 toPurge.add(var1.domain.get(i));
                 revised = true;
             }
-
-
         }
 
+        //Purge the bad domain values
         if(toPurge.size()>0){
             var1.purgeValue(toPurge);
             var1.checkForSingleton();
         }
         toPurge = new ArrayList<>();
 
+        //loop through the domain of the variable and test the domains against the needed value
         for(int i = 0; i < var2.domain.size(); i++){
-
             neededValue1 = c1.getArithSol() * var2.domain.get(i);
             neededValue2 = var2.domain.get(i) / c1.getArithSol();
 
@@ -440,6 +454,7 @@ public class KenKenPuzzle {
             }
         }
 
+        //Purge the bad domain values
         if(toPurge.size()>0){
             var2.purgeValue(toPurge);
             var2.checkForSingleton();
@@ -472,16 +487,32 @@ public class KenKenPuzzle {
         return constraintList;
     }
 
-
-
+    /**
+     * Checks if the specific cell is assigned
+     * @param row - the row
+     * @param col - the col
+     * @return - if the cell is assigned or not
+     */
     public boolean isAssigned(int row, int col){
         return variablesTotal[row][col].isAssigned();
     }
 
+    /**
+     * Gets the assignment of a specified cell
+     * @param row - the row
+     * @param col - the col
+     * @return - the assignment of the cell
+     */
     public int returnAssignment(int row, int col){
         return variablesTotal[row][col].getAssignment();
     }
 
+    /**
+     * Gets the domain list of a specified cell
+     * @param row - the row
+     * @param col - the col
+     * @return - the domain list
+     */
     public String getDomainAt(int row, int col){
         return variablesTotal[row][col].domainToString();
     }

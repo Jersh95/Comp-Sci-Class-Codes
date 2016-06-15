@@ -120,7 +120,6 @@ public class KenKenWindow extends JFrame{
      */
     public void changeRows()
     {
-        //this.remove(display);
         puzzle = new KenKenPuzzle(getFile());
         display = new KenKenDisplay(puzzle);
         this.add(display);

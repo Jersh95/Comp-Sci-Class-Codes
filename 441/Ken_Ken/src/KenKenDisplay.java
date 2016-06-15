@@ -8,7 +8,7 @@ import java.awt.event.MouseEvent;
  * Program Purpose:
  *  This program will take in a user chosen file representing a KenKen puzzle and solve it through node and arc consistency while displaying it with GUI
  *
- *  THe KenKenDisplay class handles painting everything onto the window
+ *  The KenKenDisplay class handles painting everything onto the window
  */
 public class KenKenDisplay extends JPanel {
     private KenKenPuzzle puzzle;
@@ -19,10 +19,9 @@ public class KenKenDisplay extends JPanel {
     int offSet_Solution_Y = 70;
     int offSet_Solution_X = 50;
     int offSet_Constr_Y = 18;
-    int offSet_Constr_X = 0;
 
     Font bigFont = new Font("Arial",1,40);
-    Font smallFont = new Font("Arial",1,20);
+    Font smallFont = new Font("Arial",1,13);
 
     /**
      * This is the constructor for the Display that assigns the puzzle to the puzzle passed inside the parameter
@@ -44,7 +43,6 @@ public class KenKenDisplay extends JPanel {
      */
     public void processClick(MouseEvent me)
     {
-        //System.out.println("\t" + selectedRow + "\t" + selectedCol);
         puzzle.generateMove();
         repaint();
     }
@@ -119,6 +117,7 @@ public class KenKenDisplay extends JPanel {
                         }
                     }
 
+                    //This will print the domains in the middle of the cell
                     g.setColor(Color.RED);
                     g.setFont(smallFont);
                     for(int r = 0; r<puzzle.getNumRows(); r++){
